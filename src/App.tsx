@@ -1,25 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import "router"
+import {BrowserRouter, Routes, Route} from "react-router-dom";
+import Header from "./components/Header";
+import Matches from "./pages/Matches/Matches";
+import Profile from "./pages/Profile/Profile";
+import Chat from "./pages/Chat/Chat";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+        <Header></Header>
+        <Routes>
+            <Route path="/" element={<Matches/>}/>
+            <Route path="profile" element={<Profile/>}/>
+            <Route path="matches" element={<Matches/>}/>
+            <Route path="chat" element={<Chat/>}/>
+        </Routes>
+    </BrowserRouter>
   );
 }
 

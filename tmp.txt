@@ -1,0 +1,34 @@
+// replay
+import ReplayIcon from '@mui/icons-material/Replay';
+
+// close
+import CloseIcon from '@mui/icons-material/Close';
+
+// star
+import StarIcon from '@mui/icons-material/Star';
+
+// thunder
+import BoltIcon from '@mui/icons-material/Bolt';
+
+// favorite
+import FavoriteIcon from '@mui/icons-material/Favorite';
+
+// tmp tinder icon
+import WhatshotIcon from '@mui/icons-material/Whatshot';
+
+// chat
+import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
+
+// work
+import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
+
+// location
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+
+
+// profile
+import PersonIcon from '@mui/icons-material/Person';
+
+
+// more
+ArrowCircleUpIcon
