@@ -1,10 +1,10 @@
-import React from "react";
-import {Box, Card, CardContent, Fab, styled, Typography} from "@mui/material";
+import React, {useState} from "react";
+import {Box, Card, CardContent, Collapse, Fab, styled, Typography} from "@mui/material";
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import MatchesOptions from "./MatchesOptions";
-
+import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 
 const CardStyle = {
     backgroundColor: 'grey',
@@ -36,21 +36,42 @@ const IconStyle = {
 }
 
 
-const FabButton = styled(Fab)`
-  position: absolute;
-  right: 30px;
-  bottom: 30px;
-  background-color: transparent;
-  transition: transform .8s ease-in-out;
-  transform: rotate(0);
-  &:hover {
-    background-color: transparent;
-    transform: rotate(180deg);
-    
-  }
-`
+
+interface ExpandMoreProps extends IconButtonProps {
+    expand: boolean;
+}
+
+const ExpandMore = styled((props: ExpandMoreProps) => {
+    const { expand, ...other } = props;
+    return <IconButton {...other} />;
+})(({ theme, expand }) => ({
+
+    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+    position: "absolute",
+    right: "30px",
+    bottom: "30px",
+    backgroundColor: "transparent",
+    transition: theme.transitions.create('transform', {
+        duration: theme.transitions.duration.shortest,
+    }),
+}));
+
+const NameStyle =  {
+    "&:after": {
+        marginTop: "5px",
+        marginLeft: "10px",
+        content: '"25"',
+        fontSize: "25px",
+    }
+}
+
 
 function MatchesCard():JSX.Element {
+    const [expanded, setExpanded] = useState<boolean>(false);
+
+    const toggleExpanded = () => {
+        setExpanded(!expanded);
+    }
 
     return (
         <Box>
@@ -60,7 +81,9 @@ function MatchesCard():JSX.Element {
                 <CardContent
                     sx={ContentStyle}
                 >
-                    <Typography variant="h3" component="div">
+                    <Typography variant="h3" component="div"
+                                sx={NameStyle}
+                    >
                         Natasha
                     </Typography>
                     <Box component="div"
@@ -84,12 +107,23 @@ function MatchesCard():JSX.Element {
                             3km away
                         </Typography>
                     </Box>
-                    <FabButton sx={{backgroundColor: "transparent",
-                    }}>
+                    <ExpandMore
+                        expand={expanded}
+                        onClick={toggleExpanded}
+                    >
                         <ArrowCircleUpIcon />
-                    </FabButton>
+                    </ExpandMore>
                 </CardContent>
             </Card>
+
+
+            <Collapse in={expanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                    <Typography paragraph>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum dolorum iure numquam officia, pariatur quibusdam quisquam ratione repellat reprehenderit voluptate! Accusamus iusto labore laudantium molestias quo quod rerum, saepe vitae!
+                    </Typography>
+                </CardContent>
+            </Collapse>
             <MatchesOptions/>
         </Box>
     )

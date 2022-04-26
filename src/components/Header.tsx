@@ -10,8 +10,8 @@ import Profile from "../pages/Profile/Profile";
 import Matches from "../pages/Matches/Matches";
 
 const HeaderStyles= {
-    width: "100vw",
-    backgroundColor: "#dcdcdc",
+    width: "100%",
+    backgroundColor: "#f8f8f8",
     height: 50,
     justifyContent: "space-between",
     alignItems: "center",
