@@ -1,10 +1,10 @@
 import React from "react";
-import MatchCard from "./components/MatchCard";
+import MatchesCard from "./components/MatchesCard";
 
 function Matches():JSX.Element {
     return (
         <>
-            <MatchCard></MatchCard>
+            <MatchesCard></MatchesCard>
 
         </>
     )
