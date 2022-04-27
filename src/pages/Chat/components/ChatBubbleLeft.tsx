@@ -18,18 +18,18 @@ const AvatarLeftStyle = {
 }
 
 interface Receiver {
-    receiverAvatar: string,
+    senderAvatar: string,
     message: string
 }
 
 
-function ChatBubbleLeft({receiverAvatar, message}:Receiver):JSX.Element {
+function ChatBubbleLeft({senderAvatar, message}:Receiver):JSX.Element {
 
     return (
         <Paper sx={BubbleLeftStyle}>
             <Avatar
                 alt="Remy Sharp"
-                src={receiverAvatar}
+                src={senderAvatar}
                 sx={AvatarLeftStyle}
             />
             <Typography

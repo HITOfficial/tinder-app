@@ -8,7 +8,7 @@ const CardContentStyle = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    height: "600px",
+    height: "100%",
     justifyContent: "space-around",
 }
 
@@ -17,7 +17,7 @@ const CardContentStyle = {
 
 function Profile():JSX.Element {
     return (
-      <Card sx={{minWidth: "400px"}}>
+      <Card sx={{minWidth: "400px", height: 650, overflowY: "scroll"}}>
           <CardContent sx={CardContentStyle}>
               <Avatar
                   alt="Remy Sharp"
