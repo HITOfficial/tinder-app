@@ -12,6 +12,13 @@ const ActionsBox = styled("div")`
   
 `
 
+const FabSend = styled(Fab)`
+  transition: background-color .4s ease-in-out;
+  &:hover {
+    background-color: #facee6;
+  }
+`
+
 function ChatActions():JSX.Element {
     return (
         <ActionsBox>
@@ -20,13 +27,13 @@ function ChatActions():JSX.Element {
                 label="New message"
                 multiline
                 rows={2}
-                defaultValue="netflix & chill"
+                defaultValue=""
                 sx={{width: "80%"}}
                 variant="filled"
             />
-            <Fab>
+            <FabSend>
                 <SendIcon/>
-            </Fab>
+            </FabSend>
         </ActionsBox>
     )
 }
