@@ -1,14 +1,13 @@
 import React from "react";
-import {Paper, styled} from "@mui/material";
 import ChatBox from "./components/ChatBox";
-import ChatList from "./components/ChatList.";
+import ChatList from "./components/ChatList";
+import {Outlet} from "react-router-dom";
 
 
 function Chat():JSX.Element {
     return (
         <>
-            <ChatList></ChatList>
-            {/*<ChatBox></ChatBox>*/}
+            <Outlet/>
         </>
     )
 }

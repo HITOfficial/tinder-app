@@ -19,8 +19,11 @@ const ActionsBox = styled("div")`
 
 const FabSend = styled(Fab)`
   transition: background-color .4s ease-in-out;
+  backgroundColor: white;
+  color:rgb(255, 101, 91);
   &:hover {
-    background-color: #facee6;
+    background-color: rgb(255, 101, 91);
+    color: white;
   }
 `
 

@@ -7,7 +7,7 @@ const BubbleRightStyle = {
     alignItems: "center",
     marginTop: "10px",
     marginLeft:"auto",
-    backgroundColor: "#facee6",
+    backgroundColor: "rgb(255, 101, 91)",
     paddingLeft:"5px"
 }
 

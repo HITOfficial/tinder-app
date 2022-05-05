@@ -47,7 +47,7 @@ function ChatBox():JSX.Element {
                 }
                 title="John"
                 subheader="Warsaw"
-                sx={{backgroundColor: "#facee6"}}
+                sx={{backgroundColor: "rgb(255, 101, 91)"}}
             />
 
             <CardContent
