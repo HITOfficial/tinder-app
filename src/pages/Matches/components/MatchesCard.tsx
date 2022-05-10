@@ -5,6 +5,7 @@ import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import MatchesOptions from "./MatchesOptions";
 import IconButton, { IconButtonProps } from '@mui/material/IconButton';
+import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 
 const CardStyle = {
     backgroundColor: 'grey',
@@ -46,7 +47,7 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
     return <IconButton {...other} />;
 })(({ theme, expand }) => ({
 
-    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+    transform: !expand ? 'rotate(270deg)' : 'rotate(90deg)',
     position: "absolute",
     right: "30px",
     bottom: "30px",
@@ -111,7 +112,7 @@ function MatchesCard():JSX.Element {
                         expand={expanded}
                         onClick={toggleExpanded}
                     >
-                        <ArrowCircleUpIcon />
+                        <ArrowLeftIcon />
                     </ExpandMore>
                 </CardContent>
             </Card>

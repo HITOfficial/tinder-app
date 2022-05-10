@@ -8,14 +8,9 @@ const BubbleRightStyle = {
     marginTop: "10px",
     marginLeft:"auto",
     backgroundColor: "rgb(255, 101, 91)",
-    paddingLeft:"5px"
-}
+    minHeight: 25,
+    padding: 1
 
-const AvatarRightStyle = {
-    width: 25,
-    height: 25,
-    margin: 1,
-    order: 1
 }
 
 
@@ -27,11 +22,6 @@ interface Sender {
 function ChatBubbleRight({senderAvatar, message}: Sender):JSX.Element {
     return (
         <Paper sx={BubbleRightStyle}>
-            <Avatar
-                alt="Remy Sharp"
-                src={senderAvatar}
-                sx={AvatarRightStyle}
-            />
             <Typography
                 variant="subtitle2">
                 {message}

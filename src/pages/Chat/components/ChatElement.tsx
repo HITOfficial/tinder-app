@@ -9,7 +9,7 @@ function ChatElement({name, avatar, message, id}: NewMatch):JSX.Element {
         <>
             <Card
                 component={NavLink}
-                to={`../user${id}`}
+                to={`../user0-user${id}`}
                 sx={{width: "100%", height: 100}}
             >
                 <CardHeader

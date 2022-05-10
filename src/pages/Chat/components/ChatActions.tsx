@@ -6,7 +6,7 @@ import {Message} from "../../../redux/slices/MessagesSlice";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../../redux/store";
 import {addMessage} from "../../../redux/slices/MessagesSlice";
-
+import {postMessage} from "../../../redux/slices/MessagesSlice";
 
 const ActionsBox = styled("div")`
   width: 100%;
@@ -48,6 +48,7 @@ function ChatActions({sender, receiver, senderAvatar, receiverAvatar} : Users):J
     const onSubmit= handleSubmit((data:any) => {
         console.log(data.message);
         const message: Message = {
+            id: Date.now(),
             message: data.message,
             sender: sender,
             receiver: receiver,
@@ -55,6 +56,7 @@ function ChatActions({sender, receiver, senderAvatar, receiverAvatar} : Users):J
             receiverAvatar: receiverAvatar,
         }
         dispatch(addMessage(message));
+        dispatch(postMessage(message));
     });
 
     return (

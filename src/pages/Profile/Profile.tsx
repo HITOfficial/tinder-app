@@ -13,8 +13,6 @@ const CardContentStyle = {
 }
 
 
-
-
 function Profile():JSX.Element {
     return (
       <Card sx={{minWidth: "400px", height: 650, overflowY: "scroll"}}>

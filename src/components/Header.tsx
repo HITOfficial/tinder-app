@@ -27,8 +27,6 @@ const ActiveStyle = {
 
 function Header ():JSX.Element {
 
-
-
     return (
         <>
             <Grid

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {
     Avatar, Badge, Box, Card,
     styled,
@@ -6,6 +6,7 @@ import {
 } from "@mui/material";
 import MatchesSlider from "./MatchesSlider";
 import ChatElement from "./ChatElement";
+import {useGetMessagesQuery} from "../../../redux/slices/messages";
 
 
 const CardStyle = {
@@ -59,6 +60,41 @@ export interface NewMatch {
 
 
 function ChatList(): JSX.Element {
+    const {data, error, isLoading} = useGetMessagesQuery();
+
+    useEffect(() => {
+        console.log("TO: ", data);
+    }, [data]);
+
+    useEffect(() => {
+        console.error("TY: ", error);
+    }, [error]);
+
+    useEffect(() => {
+        console.log("T: ", isLoading);
+    }, [isLoading]);
+
+    const socketUrl = "ws://localhost:8080";
+    let exampleSocket = new WebSocket(socketUrl);
+
+// Listen connection events.
+    exampleSocket.onopen = (ev) => {
+        exampleSocket.send(JSON.stringify({type: 'read', path: 'messages'}));
+    };
+    exampleSocket.onmessage = (m) => {
+        let message = JSON.parse(m.data);
+        console.log('Message: ', message);
+    };
+    exampleSocket.onclose = (ev) => {
+        console.log('Socket closed: ', ev);
+    };
+
+
+    useEffect(() => {
+    }, [exampleSocket]);
+
+
+
     return (
         <Card sx={CardStyle}>
             <Badge badgeContent={39} sx={BadgeStyle}>
