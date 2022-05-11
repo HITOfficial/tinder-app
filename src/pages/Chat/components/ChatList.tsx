@@ -7,6 +7,7 @@ import {
 import MatchesSlider from "./MatchesSlider";
 import ChatElement from "./ChatElement";
 import {useGetMessagesQuery} from "../../../redux/slices/messages";
+import io from "socket.io-client";
 
 
 const CardStyle = {
@@ -59,6 +60,12 @@ export interface NewMatch {
 }
 
 
+
+const socket = io("http://localhost:3001");
+
+socket.emit("hello")
+
+
 function ChatList(): JSX.Element {
     const {data, error, isLoading} = useGetMessagesQuery();
 
@@ -73,26 +80,6 @@ function ChatList(): JSX.Element {
     useEffect(() => {
         console.log("T: ", isLoading);
     }, [isLoading]);
-
-    const socketUrl = "ws://localhost:8080";
-    let exampleSocket = new WebSocket(socketUrl);
-
-// Listen connection events.
-    exampleSocket.onopen = (ev) => {
-        exampleSocket.send(JSON.stringify({type: 'read', path: 'messages'}));
-    };
-    exampleSocket.onmessage = (m) => {
-        let message = JSON.parse(m.data);
-        console.log('Message: ', message);
-    };
-    exampleSocket.onclose = (ev) => {
-        console.log('Socket closed: ', ev);
-    };
-
-
-    useEffect(() => {
-    }, [exampleSocket]);
-
 
 
     return (

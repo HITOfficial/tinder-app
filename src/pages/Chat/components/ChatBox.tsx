@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchMessages } from "../../../redux/slices/MessagesSlice";
 import { Message } from "../../../redux/slices/MessagesSlice";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
+import {io} from "socket.io-client";
 
 
 const CardStyle = {
@@ -30,6 +31,14 @@ const CardContentStyle = {
   overflowY: "scroll",
   paddingBottom: 10
 };
+
+// socket
+
+const socket = io("http://localhost:8000")
+socket.on("message", data => {
+    console.log(data);
+})
+
 
 const USER1 = "user1";
 const USER2 = "user2";
