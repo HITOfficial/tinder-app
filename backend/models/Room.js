@@ -7,9 +7,9 @@ const RoomSchema = new mongoose.Schema({
         required: true
     },
     messages: [{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Message',
+        type: MessageSchema
     }]
 })
 
 module.exports = mongoose.model("Room", RoomSchema);
+

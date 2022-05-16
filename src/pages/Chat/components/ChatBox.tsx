@@ -33,11 +33,12 @@ const CardContentStyle = {
 };
 
 // socket
+console.log("chatbx")
+const socket = io("http://localhost:3001");
+socket.emit("load_room","12345")
 
-const socket = io("http://localhost:8000")
-socket.on("message", data => {
-    console.log(data);
-})
+socket.on("messages",args => console.log(args));
+
 
 
 const USER1 = "user1";

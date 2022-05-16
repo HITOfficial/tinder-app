@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const MessageSchema = new mongoose.Schema({
+MessageSchema = new mongoose.Schema({
     senderAvatar: {
         type: String,
         required: true
@@ -17,7 +17,7 @@ const MessageSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    content: {
+    message: {
         type: String,
         required: true
     },
@@ -28,3 +28,4 @@ const MessageSchema = new mongoose.Schema({
 })
 
 module.exports =  mongoose.model("Message", MessageSchema);
+
