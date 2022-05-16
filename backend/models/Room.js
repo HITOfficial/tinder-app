@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-import Message from "./Message";
+const Message = require("./Message");
 
 const RoomSchema = new mongoose.Schema({
     roomID: {
@@ -12,6 +12,4 @@ const RoomSchema = new mongoose.Schema({
     }]
 })
 
-const Room = mongoose.model("Room", RoomSchema);
-
-module.exports = Room
+module.exports = mongoose.model("Room", RoomSchema);
