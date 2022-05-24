@@ -23,7 +23,7 @@ function App() {
                   <Route path="matches" element={<Matches/>}/>
                   <Route path="chat" element={<Chat/>}>
                       <Route path="list" element={<ChatList/>}/>
-                      <Route path="user:id1-user:id2" element={<ChatBox/>}/>
+                      <Route path="room:roomID" element={<ChatBox/>}/>
                   </Route>
               </Routes>
           </BrowserRouter>

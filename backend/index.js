@@ -5,19 +5,21 @@ const cors = require("cors");
 const {Server} = require("socket.io");
 
 
+const route = require("./routes/routes");
+
 
 app.use(cors());
-
+app.use(route)
 //MongoDB
 const mongoose = require("mongoose");
 const db = require("./connection");
 // Mongo Schema
 const Room = require("./models/Room");
-
+const User = require("./models/User")
 const Message = require("./models/Message");
 
 const Rooms = mongoose.model("Room");
-
+const Users = mongoose.model("User");
 
 const server = http.createServer(app);
 
@@ -63,6 +65,44 @@ io.on("connection", (socket) => {
     //     },
     // ).then((e )  => {console.log(e)})
 
+    // new TMP USER
+    // const user = new User({
+    //     name: "Di",
+    //     email: "sasha@gmail.com",
+    //     password: "sasha1",
+    //     rooms: [],
+    //     age: 36,
+    //     location: "Warsaw",
+    //     sex: "man",
+    //     sexPreference: "women",
+    //     description: "netflix & chill",
+    //     gallery: []
+    // })
+    // user.save().then((e) => console.log(e))
+
+
+    // Users.updateOne(
+    //     {_id:"62825b67f5c2addc780c65e1"},
+    //     {$push: {
+    //         rooms: "62825b67f5c2addc780c65e1"
+    //         }}
+    // )
+    // Users.updateOne(
+    //     {_id:"62825ab320087ff2ff20d238"},
+    //     {$push: {
+    //             rooms: "62825ab320087ff2ff20d238"
+    //         }}
+    // )
+
+
+    // Users.updateOne(
+    //     {_id:"62825b67f5c2addc780c65e1"},
+    //     {$push : {
+    //         rooms: "62825ab320087ff2ff20d238"
+    //         }
+    // }).then((er, data) => {
+    //     console.log(er, data)
+    // })
 
     // const room = new Room({roomID:"1235easd", messages: []})
     // room.save().then(() => console.log("saved"))
