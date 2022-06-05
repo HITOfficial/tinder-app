@@ -8,7 +8,7 @@ import {
   CardHeader,
   IconButton,
   Paper,
-  Typography
+  Typography,
 } from "@mui/material";
 import ChatBubbleRight from "./ChatBubbleRight";
 import ChatBubbleLeft from "./ChatBubbleLeft";
@@ -18,28 +18,26 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchMessages } from "../../../redux/slices/MessagesSlice";
 import { Message } from "../../../redux/slices/MessagesSlice";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
-import {io} from "socket.io-client";
-
+import { io } from "socket.io-client";
+import { fetchUser } from "../../../redux/slices/UserSlice";
 
 const CardStyle = {
-  height: 650
+  height: 650,
 };
 
 const CardContentStyle = {
   height: 420,
   maxHeight: 420,
   overflowY: "scroll",
-  paddingBottom: 10
+  paddingBottom: 10,
 };
 
 // socket
-console.log("chatbx")
+console.log("chatbx");
 const socket = io("http://localhost:3001");
-socket.emit("load_room","12345")
+socket.emit("load_room", "12345");
 
-socket.on("messages",args => console.log(args));
-
-
+socket.on("messages", (args) => console.log(args));
 
 const USER1 = "user1";
 const USER2 = "user2";
@@ -51,25 +49,26 @@ const RECEIVER_AVATAR =
 function ChatBox(): JSX.Element {
   const dispatch: AppDispatch = useDispatch();
   const messages = useSelector((state: RootState) => state.messages);
+  const user = useSelector((state: RootState) => state.user);
 
-
-    useEffect(() => {
+  useEffect(() => {
     messages.status === "idle" && dispatch(fetchMessages());
+    user.status === "idle" && dispatch(fetchUser("62825b67f5c2addc780c65e1"));
   }, []);
 
   useEffect(() => {
-      console.log(messages);
+    console.log(messages);
   }, [messages]);
 
-    useEffect(() => {
+  useEffect(() => {
+    console.log("USER: ", user.user);
+  }, [user]);
 
-    }, [messages]);
-
+  useEffect(() => {}, [messages]);
 
   return (
     <Card sx={CardStyle}>
-
-        <CardHeader
+      <CardHeader
         action={
           <IconButton>
             <ArrowLeftIcon fontSize="large" />
@@ -89,7 +88,7 @@ function ChatBox(): JSX.Element {
               receiver,
               senderAvatar,
               receiverAvatar,
-              message
+              message,
             }: Message,
             id
           ) => {
