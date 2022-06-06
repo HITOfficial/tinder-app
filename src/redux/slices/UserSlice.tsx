@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-const POST_URL = "http://localhost:8000/users/";
+const POST_URL = "http://localhost:3001/users/";
 
 export interface User {
   _id: number;
@@ -14,6 +14,7 @@ export interface User {
   sexPreference: string;
   description: string;
   gallery: string;
+  avatar: string;
 }
 
 const initialState: {
@@ -23,8 +24,8 @@ const initialState: {
 
 export const fetchUser = createAsyncThunk(
   "users/fetchUser",
-  async (userID: string) => {
-    return fetch(POST_URL + userID).then((res) => res.json());
+  async (id: string) => {
+    return fetch(POST_URL + id).then((res) => res.json());
   }
 );
 

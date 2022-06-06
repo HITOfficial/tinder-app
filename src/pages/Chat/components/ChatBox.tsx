@@ -1,14 +1,11 @@
 import React, { useEffect } from "react";
 import {
   Avatar,
-  Button,
   Card,
   CardActions,
   CardContent,
   CardHeader,
   IconButton,
-  Paper,
-  Typography,
 } from "@mui/material";
 import ChatBubbleRight from "./ChatBubbleRight";
 import ChatBubbleLeft from "./ChatBubbleLeft";
@@ -16,10 +13,12 @@ import ChatActions from "./ChatActions";
 import { AppDispatch, RootState } from "../../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMessages } from "../../../redux/slices/MessagesSlice";
-import { Message } from "../../../redux/slices/MessagesSlice";
+import { Message } from "../../../redux/slices/UserRoomsSlice";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import { io } from "socket.io-client";
 import { fetchUser } from "../../../redux/slices/UserSlice";
+import { useParams } from "react-router-dom";
+import { fetchRoomData } from "../../../redux/slices/RoomSlice";
 
 const CardStyle = {
   height: 650,
@@ -33,27 +32,33 @@ const CardContentStyle = {
 };
 
 // socket
-console.log("chatbx");
 const socket = io("http://localhost:3001");
 socket.emit("load_room", "12345");
 
 socket.on("messages", (args) => console.log(args));
 
-const USER1 = "user1";
-const USER2 = "user2";
-const SENDER_AVATAR =
-  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cG9ydHJhaXR8ZW58MHx8MHx8&w=1000&q=80";
-const RECEIVER_AVATAR =
-  "https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80";
+// const USER1 = "user1";
+// const USER2 = "user2";
+// const SENDER_AVATAR =
+//   "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cG9ydHJhaXR8ZW58MHx8MHx8&w=1000&q=80";
+// const RECEIVER_AVATAR =
+//   "https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80";
 
 function ChatBox(): JSX.Element {
   const dispatch: AppDispatch = useDispatch();
   const messages = useSelector((state: RootState) => state.messages);
   const user = useSelector((state: RootState) => state.user);
+  const room = useSelector((state: RootState) => state.room);
+
+  const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
     messages.status === "idle" && dispatch(fetchMessages());
     user.status === "idle" && dispatch(fetchUser("62825b67f5c2addc780c65e1"));
+
+    if (id !== undefined) {
+      room.status === "idle" && dispatch(fetchRoomData(id));
+    }
   }, []);
 
   useEffect(() => {
@@ -61,67 +66,91 @@ function ChatBox(): JSX.Element {
   }, [messages]);
 
   useEffect(() => {
-    console.log("USER: ", user.user);
-  }, [user]);
+    console.log("Room: ", room.room);
+  }, [room]);
 
   useEffect(() => {}, [messages]);
 
+  const notLoggedUserSender = (): string => {
+    if (
+      user.user !== null &&
+      room.room !== null &&
+      user.user._id.toString() !== room.room.user1
+    ) {
+      return room.room.user1Avatar;
+    } else if (room.room != null) {
+      return room.room.user2Avatar;
+    }
+    return "";
+  };
+
+  const loggedUserSender = (): string => {
+    if (
+      user.user !== null &&
+      room.room !== null &&
+      user.user._id.toString() !== room.room.user1
+    ) {
+      return room.room.user2Avatar;
+    } else if (room.room != null) {
+      return room.room.user1Avatar;
+    }
+    return "";
+  };
+
   return (
     <Card sx={CardStyle}>
-      <CardHeader
-        action={
-          <IconButton>
-            <ArrowLeftIcon fontSize="large" />
-          </IconButton>
-        }
-        avatar={<Avatar src={RECEIVER_AVATAR}></Avatar>}
-        title="John"
-        subheader="Warsaw"
-        sx={{ backgroundColor: "rgb(255, 101, 91)", padding: "10px" }}
-      />
-
-      <CardContent sx={CardContentStyle}>
-        {messages.messages.map(
-          (
-            {
-              sender,
-              receiver,
-              senderAvatar,
-              receiverAvatar,
-              message,
-            }: Message,
-            id
-          ) => {
-            // someone is a sender
-            if (sender === USER2 && receiver === USER1) {
-              return (
-                <ChatBubbleLeft
-                  senderAvatar={RECEIVER_AVATAR}
-                  message={message}
-                  key={id}
-                />
-              );
-              // i am sender
-            } else if (sender === USER1 && receiver === USER2) {
-              return (
-                <ChatBubbleRight
-                  senderAvatar={SENDER_AVATAR}
-                  message={message}
-                  key={id}
-                />
-              );
+      {user.user !== null && room.room !== null && (
+        <>
+          <CardHeader
+            action={
+              <IconButton>
+                <ArrowLeftIcon fontSize="large" />
+              </IconButton>
             }
-          }
-        )}
-      </CardContent>
-      <CardActions>
-        <ChatActions
-          sender={USER1}
-          receiver={USER2}
-          senderAvatar={SENDER_AVATAR}
-          receiverAvatar={RECEIVER_AVATAR}
-        />
-      </CardActions>
+            avatar={<Avatar src={notLoggedUserSender()}></Avatar>}
+            title="John"
+            subheader="Warsaw"
+            sx={{ backgroundColor: "rgb(255, 101, 91)", padding: "10px" }}
+          />
+
+          <CardContent sx={CardContentStyle}>
+            {room.room != null &&
+              room.room.messages.map(
+                ({ _id, sender, receiver, message, date }: Message) => {
+                  if (user.user != null) {
+                    if (
+                      sender != user.user._id.toString() &&
+                      room.room != null
+                    ) {
+                      // someone is a sender
+                      if (user.user._id.toString() !== sender) {
+                        return (
+                          <ChatBubbleLeft
+                            senderAvatar={notLoggedUserSender()}
+                            message={message}
+                            key={_id}
+                          />
+                        );
+                      }
+                      // i am sender
+                    }
+                    return (
+                      <ChatBubbleRight
+                        senderAvatar={loggedUserSender()}
+                        message={message}
+                        key={id}
+                      />
+                    );
+                  }
+                  return;
+                }
+              )}
+          </CardContent>
+          <CardActions>
+            <ChatActions room={room.room} user={user.user} />
+          </CardActions>
+        </>
+      )}
     </Card>
   );
 }

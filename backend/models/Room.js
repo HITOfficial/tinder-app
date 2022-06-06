@@ -18,6 +18,14 @@ const RoomSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  user1Name: {
+    type: String,
+    required: true,
+  },
+  user2Name: {
+    type: String,
+    required: true,
+  },
   messages: [
     {
       type: MessageSchema,

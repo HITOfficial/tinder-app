@@ -59,9 +59,13 @@ io.on("connection", (socket) => {
 
   // User.updateOne(
   //   { _id: "62825b67f5c2addc780c65e1" },
-  //   { $push: { rooms: "62825b67f5c2addc780c65e1" } }
+  //   { $push: { rooms: "629b87528cc662bfb1db1aa9" } }
   // ).then((x) => console.log(x));
-
+  // User.updateOne(
+  //   { _id: "629be231b801aab61e00ac68" },
+  //   { $push: { rooms: "629b87528cc662bfb1db1aa9" } }
+  // ).then((x) => console.log(x));
+  //
   // User.findOne({ _id: "629b86e2055f68ce3922f274" }).then((user) =>
   //   console.log(user)
   // );

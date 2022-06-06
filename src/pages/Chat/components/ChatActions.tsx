@@ -2,11 +2,13 @@ import React from "react";
 import { Button, Fab, styled, TextField } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { Message } from "../../../redux/slices/MessagesSlice";
+import { Message } from "../../../redux/slices/UserRoomsSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../redux/store";
 import { addMessage } from "../../../redux/slices/MessagesSlice";
 import { postMessage } from "../../../redux/slices/MessagesSlice";
+import { Room } from "../../../redux/slices/UserRoomsSlice";
+import { User } from "../../../redux/slices/UserSlice";
 
 const ActionsBox = styled("div")`
   width: 100%;
@@ -27,19 +29,12 @@ const FabSend = styled(Fab)`
   }
 `;
 
-interface Users {
-  sender: string;
-  receiver: string;
-  senderAvatar: string;
-  receiverAvatar: string;
+interface Props {
+  room: Room;
+  user: User;
 }
 
-function ChatActions({
-  sender,
-  receiver,
-  senderAvatar,
-  receiverAvatar,
-}: Users): JSX.Element {
+function ChatActions({ room, user }: Props): JSX.Element {
   const {
     handleSubmit,
     control,
@@ -49,16 +44,20 @@ function ChatActions({
 
   const onSubmit = handleSubmit((data: any) => {
     console.log(data.message);
+    const sender = user._id.toString();
+    const receiver = room.user1
+      ? user._id.toString() !== room.user1
+      : room.user2.toString();
+
     const message: Message = {
-      id: Date.now(),
-      message: data.message,
+      _id: 123,
       sender: sender,
-      receiver: receiver,
-      senderAvatar: senderAvatar,
-      receiverAvatar: receiverAvatar,
+      receiver: receiver.toString(),
+      message: data.message,
+      date: Date(),
     };
-    dispatch(addMessage(message));
-    dispatch(postMessage(message));
+    // dispatch(addMessage(message));
+    // dispatch(postMessage(message));
   });
 
   return (

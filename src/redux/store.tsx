@@ -3,12 +3,16 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import messagesSlice from "./slices/MessagesSlice";
 import { messages } from "./slices/messages";
 import userSlice from "./slices/UserSlice";
+import UserRoomsSlice from "./slices/UserRoomsSlice";
+import RoomSlice from "./slices/RoomSlice";
 
 export const store = configureStore({
   reducer: {
     messages: messagesSlice,
     [messages.reducerPath]: messages.reducer,
     user: userSlice,
+    userRooms: UserRoomsSlice,
+    room: RoomSlice,
   },
 });
 
