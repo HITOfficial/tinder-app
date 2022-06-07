@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Room } from "./UserRoomsSlice";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Message, Room } from "./UserRoomsSlice";
 
 const POST_URL = "http://localhost:3001/rooms/";
 
@@ -15,10 +15,16 @@ export const fetchRoomData = createAsyncThunk(
   }
 );
 
-const userSlice = createSlice({
+const roomSlice = createSlice({
   name: "userRooms",
   initialState,
-  reducers: {},
+  reducers: {
+    addNewMessage: (state, action: PayloadAction<Message>) => {
+      if (state.room) {
+        state.room.messages.push(action.payload);
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchRoomData.pending, (state, action) => {
       state.status = "loading";
@@ -33,4 +39,5 @@ const userSlice = createSlice({
   },
 });
 
-export default userSlice.reducer;
+export const { addNewMessage } = roomSlice.actions;
+export default roomSlice.reducer;

@@ -33,9 +33,6 @@ const CardContentStyle = {
 
 // socket
 const socket = io("http://localhost:3001");
-socket.emit("load_room", "12345");
-
-socket.on("messages", (args) => console.log(args));
 
 // const USER1 = "user1";
 // const USER2 = "user2";

@@ -171,8 +171,8 @@ export interface NewMatch {
   id: number;
 }
 
-const socket = io("http://localhost:3001");
-socket.emit("hello");
+// const socket = io("http://localhost:3001");
+// socket.emit("hello");
 
 function ChatList(): JSX.Element {
   const dispatch: AppDispatch = useDispatch();
@@ -184,6 +184,10 @@ function ChatList(): JSX.Element {
       dispatch(fetchUser("62825b67f5c2addc780c65e1"));
     }
   }, []);
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   useEffect(() => {
     // loaded user Info

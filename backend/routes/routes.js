@@ -25,10 +25,10 @@ router.get("/rooms", async (req, res) => {
   res.send(rooms);
 });
 
-// router.get("/users/:userID", async (req, res) => {
-//   const user = await User.findOne({ _id: req.body._id });
-//   res.send(user);
-// });
+router.get("/users/:userID", async (req, res) => {
+  const user = await User.findOne({ _id: req.body._id });
+  res.send(user);
+});
 
 router.get("/rooms/:id", async (req, res) => {
   const room = await Room.findById(req.params.id);
@@ -50,7 +50,7 @@ router.post("/rooms/:id", async (req, res) => {
       },
     }
   );
-  io.emit("message", { ...req.body, _id: Date.now() });
+  io.emit("message", { ...req.body, _id: message._id });
 });
 
 module.exports = router;

@@ -9,6 +9,8 @@ import { addMessage } from "../../../redux/slices/MessagesSlice";
 import { postMessage } from "../../../redux/slices/MessagesSlice";
 import { Room } from "../../../redux/slices/UserRoomsSlice";
 import { User } from "../../../redux/slices/UserSlice";
+import { io } from "socket.io-client";
+import { addNewMessage } from "../../../redux/slices/RoomSlice";
 
 const ActionsBox = styled("div")`
   width: 100%;
@@ -34,6 +36,8 @@ interface Props {
   user: User;
 }
 
+const socket = io("http://localhost:3001");
+
 function ChatActions({ room, user }: Props): JSX.Element {
   const {
     handleSubmit,
@@ -43,21 +47,25 @@ function ChatActions({ room, user }: Props): JSX.Element {
   const dispatch: AppDispatch = useDispatch();
 
   const onSubmit = handleSubmit((data: any) => {
-    console.log(data.message);
     const sender = user._id.toString();
-    const receiver = room.user1
-      ? user._id.toString() !== room.user1
-      : room.user2.toString();
+    const receiver =
+      user._id.toString() !== room.user1
+        ? room.user1.toString()
+        : room.user2.toString();
 
     const message: Message = {
       _id: 123,
       sender: sender,
-      receiver: receiver.toString(),
+      receiver: receiver,
       message: data.message,
       date: Date(),
     };
-    // dispatch(addMessage(message));
-    // dispatch(postMessage(message));
+
+    socket.emit("new_message", {
+      room: "629b87528cc662bfb1db1aa9",
+      message: message,
+    });
+    socket.on("load_new_message", (msg) => dispatch(addNewMessage(msg)));
   });
 
   return (

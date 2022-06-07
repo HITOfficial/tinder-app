@@ -71,29 +71,45 @@ io.on("connection", (socket) => {
   // );
 
   // loading room messages
-  socket.on("load_room", (roomID) => {
-    Room.find({ _id: roomID }, { messages: 1 }, (err, data) => {
-      io.emit("messages", data);
-    });
-  });
+  // socket.on("load_room", (roomID) => {
+  //   Room.find({ _id: roomID }, (err, data) => {
+  //     io.emit("room_messages", data);
+  //   });
+  // });
 
-  socket.on("new_message", (roomID, message) => {
-    Room.updateOne(
-      { _id: roomID },
+  socket.on("new_message", async ({ room, message }) => {
+    const msg = new Message({
+      sender: message.sender,
+      receiver: message.receiver,
+      message: message.message,
+      date: message.date,
+    });
+    await Room.updateOne(
+      { _id: room },
       {
         $push: {
-          messages: {
-            sender: message.sender,
-            receiver: message.receiver,
-            message: message.message,
-            date: message.date,
-          },
+          messages: msg,
         },
       }
-    ).then((msg) => {
-      console.log("msg to emit: ", msg);
-      io.emit(msg);
-    });
+    ).then(() => console.log(room, msg));
+    io.emit("load_new_message", msg);
+
+    // Room.updateOne(
+    //     {_id: roomID},
+    //     {
+    //       $push: {
+    //         messages: {
+    //           sender: message.sender,
+    //           receiver: message.receiver,
+    //           message: message.message,
+    //           date: message.date,
+    //         },
+    //       },
+    //     }
+    // ).then((msg) => {
+    //   console.log("msg to emit: ", msg);
+    //   io.emit(msg);
+    // });
   });
 
   socket.on("hello", () => {
