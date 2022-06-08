@@ -78,6 +78,7 @@ io.on("connection", (socket) => {
   // });
 
   socket.on("new_message", async ({ room, message }) => {
+    console.log("NEW MSG");
     const msg = new Message({
       sender: message.sender,
       receiver: message.receiver,
@@ -93,6 +94,7 @@ io.on("connection", (socket) => {
       }
     ).then(() => console.log(room, msg));
     io.emit("load_new_message", msg);
+    // socket.broadcast.emit("load_new_message", "world");
 
     // Room.updateOne(
     //     {_id: roomID},

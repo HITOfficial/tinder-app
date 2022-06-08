@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Fab, styled, TextField } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
@@ -46,6 +46,12 @@ function ChatActions({ room, user }: Props): JSX.Element {
   } = useForm();
   const dispatch: AppDispatch = useDispatch();
 
+  useEffect(() => {
+    socket.on("load_new_message", (msg) => {
+      dispatch(addNewMessage(msg));
+    });
+  }, []);
+
   const onSubmit = handleSubmit((data: any) => {
     const sender = user._id.toString();
     const receiver =
@@ -65,7 +71,6 @@ function ChatActions({ room, user }: Props): JSX.Element {
       room: "629b87528cc662bfb1db1aa9",
       message: message,
     });
-    socket.on("load_new_message", (msg) => dispatch(addNewMessage(msg)));
   });
 
   return (
@@ -79,6 +84,7 @@ function ChatActions({ room, user }: Props): JSX.Element {
           render={({ field: { onChange, value } }) => (
             <TextField
               onChange={onChange}
+              onKeyPress={(e) => e.key === "Enter" && onSubmit()}
               id="about-me"
               label="New message"
               multiline
