@@ -32,7 +32,7 @@ const CardContentStyle = {
 };
 
 // socket
-const socket = io("http://localhost:3001");
+const socket = io("http://localhost:3000");
 
 // const USER1 = "user1";
 // const USER2 = "user2";

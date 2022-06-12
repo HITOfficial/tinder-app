@@ -2,8 +2,10 @@ import React from "react";
 import {Avatar, Box, Card, CardContent, MenuItem, TextareaAutosize, TextField, Typography} from "@mui/material";
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import Gallery from "./components/Gallery";
-
-
+import AuthService from "../../services/auth.service";
+import UserService from "../../services/user.service";
+import { Navigate,  useNavigate } from "react-router-dom";
+  
 const CardContentStyle = {
     display: "flex",
     flexDirection: "column",
@@ -14,6 +16,20 @@ const CardContentStyle = {
 
 
 function Profile():JSX.Element {
+    const navigate = useNavigate();
+    const currentUser = AuthService.getCurrentUser();
+    console.log(currentUser)
+    UserService.getUserBoard().then(
+        response => {
+          console.log(response)
+        },
+        error => {
+         navigate("/logint")
+         return(
+            <></>
+         );
+        }
+      );
     return (
       <Card sx={{minWidth: "400px", height: 650, overflowY: "scroll"}}>
           <CardContent sx={CardContentStyle}>
@@ -25,27 +41,28 @@ function Profile():JSX.Element {
               <TextField
                   label="name"
                   id="name"
-                  defaultValue="Natasha"
+                  defaultValue={currentUser.user.name}
                   size="small"
               />
               <TextField
                   label="age"
                   id="age"
-                  defaultValue="25"
+                  defaultValue={currentUser.user.age}
                   size="small"
               />
               <TextField
                   label="Location"
                   id="age"
-                  defaultValue="Cracow"
+                  defaultValue={currentUser.user.location}
                   size="small"
               />
               <TextField
                   label="sex"
                   id="sex"
-                  defaultValue="woman"
+                  defaultValue={currentUser.user.sex}
                   size="small"
                   select
+                  sx={{width: "28ch"}}
               >
                   <MenuItem  value="man">
                       man
@@ -60,9 +77,10 @@ function Profile():JSX.Element {
               <TextField
                   label="sex-preference"
                   id="sex-preference"
-                  defaultValue="man"
+                  defaultValue={currentUser.user.sexpreference}
                   size="small"
                   select
+                  sx={{width: "28ch"}}
               >
                   <MenuItem  value="man">
                       man
