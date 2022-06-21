@@ -218,3 +218,21 @@ MessageSchema = new mongoose.Schema({
     "user2Name":"test2"
 }
 ```
+#### Backend oraz współpraca z bazą danych MongoDB
+
+##### Rejestracja użytkownika
+![image](https://user-images.githubusercontent.com/72196988/174887737-2a1d4910-4de4-422d-96b1-cef55f45064f.png)
+
+Middleware, który umożliwia sprawdzenie czy email lub nazwa użytkownika nie istnieje już na bazie
+![image](https://user-images.githubusercontent.com/72196988/174888527-14580467-1cfb-4491-b47c-dbad0ee87738.png)
+
+##### Logowanie użytkownika wraz z walidacją - zwracane zostają dane użytkownika oraz token JWT
+![image](https://user-images.githubusercontent.com/72196988/174888563-3ff49bd0-fa80-49d5-94e7-1f66865485bb.png)
+
+Funkcja do weryfikacji czy zapytania do serwera zawierają właściwy token JWT:
+![image](https://user-images.githubusercontent.com/72196988/174888659-b4529037-22e2-4779-b91c-07a3290adfb5.png)
+ 
+oraz przykładowe zastosowanie powyższej weryfikacji: 
+![image](https://user-images.githubusercontent.com/72196988/174888778-254125bf-603d-40bc-8ea1-9b68ea4b57b1.png)
+
+
