@@ -221,18 +221,18 @@ MessageSchema = new mongoose.Schema({
 #### Backend oraz współpraca z bazą danych MongoDB
 
 ##### Rejestracja użytkownika
-![image](https://user-images.githubusercontent.com/72196988/174887737-2a1d4910-4de4-422d-96b1-cef55f45064f.png)
+![image](https://user-images.githubusercontent.com/72196988/174889271-107ed0f5-6da4-4be7-b4a1-1c319d3bc4de.png)
 
 Middleware, który umożliwia sprawdzenie czy email lub nazwa użytkownika nie istnieje już na bazie
-![image](https://user-images.githubusercontent.com/72196988/174888527-14580467-1cfb-4491-b47c-dbad0ee87738.png)
+![image](https://user-images.githubusercontent.com/72196988/174889423-f35edc2a-64ef-450c-90f5-afad7e66420f.png)
 
 ##### Logowanie użytkownika wraz z walidacją - zwracane zostają dane użytkownika oraz token JWT
-![image](https://user-images.githubusercontent.com/72196988/174888563-3ff49bd0-fa80-49d5-94e7-1f66865485bb.png)
+![image](https://user-images.githubusercontent.com/72196988/174889389-9690de19-d3d2-4e88-8a4d-eda71e7b8cf9.png)
 
 Funkcja do weryfikacji czy zapytania do serwera zawierają właściwy token JWT:
-![image](https://user-images.githubusercontent.com/72196988/174888659-b4529037-22e2-4779-b91c-07a3290adfb5.png)
+![image](https://user-images.githubusercontent.com/72196988/174889828-96bcea6f-b384-4c9a-acbd-3f70dd9d7c03.png)
  
-oraz przykładowe zastosowanie powyższej weryfikacji: 
-![image](https://user-images.githubusercontent.com/72196988/174888778-254125bf-603d-40bc-8ea1-9b68ea4b57b1.png)
+oraz przykładowe zastosowanie powyższej weryfikacji:                           
+![image](https://user-images.githubusercontent.com/72196988/174889955-6157d04c-ea8a-4401-ae62-86d26d151f13.png)
 
 
