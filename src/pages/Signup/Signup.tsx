@@ -11,14 +11,14 @@ import {
 import { useNavigate } from "react-router-dom";
 
 interface MyFormValues {
-    name: string,
-    email: string,
-    password: string,
-    age: string,
-    location: string,
-    sex: string,
-    sexpreference: string,
-   
+  name: string,
+  email: string,
+  password: string,
+  age: string,
+  location: string,
+  sex: string,
+  sexpreference: string,
+ 
 }
 import Button from "@mui/material/Button"
 import {
@@ -45,7 +45,7 @@ function Signup(): JSX.Element {
   };
   return (
     <div>
-      <Typography  variant="h4" >Sign Up</Typography>
+      <Typography margin={3} variant="h4" >Sign Up</Typography>
       <Formik
         initialValues={initialValues}
         onSubmit={(values, actions) => {
@@ -133,8 +133,8 @@ function Signup(): JSX.Element {
           </Box>
           </div>
          
-          
-          <Button variant="contained"   type="submit" >Submit</Button>
+          <Box margin={1}> <Button  variant="contained"   type="submit" >Submit</Button></Box>
+         
         </Form>
       </Formik>
     </div>

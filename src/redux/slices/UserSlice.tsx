@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import authHeader from "../../services/auth-header";
 
 const POST_URL = "http://localhost:3001/users/";
 
@@ -25,9 +26,12 @@ const initialState: {
 export const fetchUser = createAsyncThunk(
   "users/fetchUser",
   async (id: string) => {
-    return fetch(POST_URL + id).then((res) => res.json());
+    return fetch(POST_URL + id ).then((res) => res.json());
   }
 );
+
+
+
 
 const userSlice = createSlice({
   name: "user",

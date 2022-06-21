@@ -1,4 +1,5 @@
 import axios from "axios";
+import authHeader from "./auth-header";
 
 const API_URL = "http://localhost:5000/api/api/auth/";
 
@@ -37,6 +38,7 @@ class AuthService {
   }
 
   getCurrentUser() {
+    //localStorage.clear()
     console.log("current user");
     
     const userStr = localStorage.getItem("user");
@@ -45,6 +47,31 @@ class AuthService {
 
     return null;
   }
+
+
+
+updateUser (name: string, email: string, password: string , age :string, location : string, sex :string, sexPreference:string , description: string ) {
+  console.log(name);
+  return axios.put("http://localhost:5000/api/users/update"  ,null, { params :  {
+    name,
+    email,
+    password,
+    age,
+    location,
+    sex, 
+    sexPreference,
+    description}
+   , headers: authHeader() }) .then(response => {
+   
+      localStorage.setItem("user", JSON.stringify(response.data));
+      console.log(JSON.stringify(response.data));
+  
+
+    return response.data;
+  });
+}
+
 }
 
 export default new AuthService();
+

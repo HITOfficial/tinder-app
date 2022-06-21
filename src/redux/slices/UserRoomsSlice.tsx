@@ -29,6 +29,7 @@ const initialState: {
 export const fetchRoom = createAsyncThunk(
   "rooms/fetchRoom",
   async (id: string) => {
+    console.log(id)
     return fetch(POST_URL + id).then((res) => res.json());
   }
 );

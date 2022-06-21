@@ -7,7 +7,7 @@ import { AppDispatch, RootState } from "../../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUser } from "../../../redux/slices/UserSlice";
 import { fetchRoom, Room } from "../../../redux/slices/UserRoomsSlice";
-
+import  AuthService from "../../../services/auth.service"
 const CardStyle = {
   height: 650,
   maxHeight: 650,
@@ -181,11 +181,18 @@ function ChatList(): JSX.Element {
 
   useEffect(() => {
     if (user.status === "idle") {
-      dispatch(fetchUser("62825b67f5c2addc780c65e1"));
+      //dispatch(fetchUser("62825b67f5c2addc780c65e1"));
+      const currentUser = AuthService.getCurrentUser();
+      dispatch(fetchUser(currentUser.user._id));
+     console.log("test")
+    
     }
   }, []);
 
   useEffect(() => {
+   
+    
+    AuthService.getCurrentUser();
     console.log(user);
   }, [user]);
 
@@ -197,6 +204,7 @@ function ChatList(): JSX.Element {
       rooms.rooms.length === 0
     ) {
       // only once load every messages
+      console.log(user.user.rooms)
       user.user.rooms.forEach((id) => {
         dispatch(fetchRoom(id));
       });
@@ -204,28 +212,43 @@ function ChatList(): JSX.Element {
   }, [user]);
 
   useEffect(() => {
+    console.log(user);
     console.log(rooms.rooms);
   }, [rooms]);
 
+  const setReceiver = (room : Room): string => {
+    console.log(user.user )
+    console.log(room)
+    if ( user.user!=null &&
+      user.user._id.toString() !== room.user1
+    ) {
+      return room.user1Name;
+    } else if (room != null) {
+      return room.user2Name;
+    }
+    return "";
+  };
+
   return (
     <Card sx={CardStyle}>
-      <Box>{rooms.rooms.length}</Box>
-      <Badge badgeContent={39} sx={BadgeStyle}>
+      {/* <Box>{rooms.rooms.length}</Box> */}
+      {/* <Badge badgeContent={39} sx={BadgeStyle}>*/}
         <Typography variant="subtitle2" display="block">
           New Matches
         </Typography>
-      </Badge>
-      <MatchesSlider />
-      <Badge badgeContent={avatars.length} sx={BadgeStyle}>
+      {/*</Badge> */}
+       <MatchesSlider /> 
+      {/* <Badge badgeContent={avatars.length} sx={BadgeStyle}> */}
         <Typography variant="subtitle2" display="block">
           Messages
         </Typography>
-      </Badge>
+      {/* </Badge> */}
       <Box sx={{ height: "90%", overflowY: "scroll" }}>
         {rooms.rooms.map((room: Room) => (
+           
           <ChatElement
             avatar={room.user1Avatar}
-            name={room.user1Name}
+            name={setReceiver(room)} //{room.user1Name}
             message={room.messages.length.toString()}
             id={room._id}
           />

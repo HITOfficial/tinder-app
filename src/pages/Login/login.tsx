@@ -31,10 +31,10 @@ function LoginT(): JSX.Element {
   const initialValues: MyFormValues = { email: '', password: "" };
 
   return (
-    <div>
+    <div >
          
       
-        <Typography  variant="h4" >Log In</Typography>
+        <Typography   margin={3} variant="h4" >Log In</Typography>
 
       <Formik
         initialValues={initialValues}
@@ -65,19 +65,19 @@ function LoginT(): JSX.Element {
         }}
       >
         <Form>
-        <div className="form-group">
-            
-            <Box margin={1}><Field  component={TextField}  size="small" label="Name"  id="email" name="email" placeholder="Name" />
-          </Box>
+        <div   className="form-group"   >
+        <Box margin={1}>
+            <Field justifyContent="center"   component={TextField}  size="small" label="Name"  id="email" name="email" placeholder="Name" />
+            </Box >
           </div> 
-          <div className="form-group">
+          <div className="form-group"   >
           <Box margin={1}>
-          <Field  component={TextField} size="small" type="password" label="Password"  id="password" name="password" placeholder="Password" />
+          <Field  component={TextField}  justifyContent="center"  size="small" type="password" label="Password"  id="password" name="password" placeholder="Password" />
           </Box>
           </div>   
-          
+          <Box margin={1}>
           <Button variant="contained"   type="submit" >Submit</Button>
-        
+          </Box>
         </Form>
       </Formik>
     </div>

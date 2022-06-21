@@ -19,7 +19,7 @@ import { io } from "socket.io-client";
 import { fetchUser } from "../../../redux/slices/UserSlice";
 import { useParams } from "react-router-dom";
 import { fetchRoomData } from "../../../redux/slices/RoomSlice";
-
+import AuthService from "../../../services/auth.service"
 const CardStyle = {
   height: 650,
 };
@@ -51,12 +51,14 @@ function ChatBox(): JSX.Element {
 
   useEffect(() => {
     messages.status === "idle" && dispatch(fetchMessages());
-    user.status === "idle" && dispatch(fetchUser("62825b67f5c2addc780c65e1"));
+    const currentUser = AuthService.getCurrentUser();
+    user.status === "idle" && dispatch(fetchUser( currentUser.user._id));
 
     if (id !== undefined) {
+      console.log(id)
       room.status === "idle" && dispatch(fetchRoomData(id));
     }
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     console.log(messages);
@@ -66,7 +68,7 @@ function ChatBox(): JSX.Element {
     console.log("Room: ", room.room);
   }, [room]);
 
-  useEffect(() => {}, [messages]);
+ // useEffect(() => {}, [messages]);
 
   const notLoggedUserSender = (): string => {
     if (
@@ -94,6 +96,19 @@ function ChatBox(): JSX.Element {
     return "";
   };
 
+  const UserToSendCheck = (): string => {
+    if (
+      user.user !== null &&
+      room.room !== null &&
+      user.user._id.toString() !== room.room.user1
+    ) {
+      return room.room.user2Name;
+    } else if (room.room != null) {
+      return room.room.user1Name;
+    }
+    return "";
+  };
+  
   return (
     <Card sx={CardStyle}>
       {user.user !== null && room.room !== null && (
@@ -105,8 +120,8 @@ function ChatBox(): JSX.Element {
               </IconButton>
             }
             avatar={<Avatar src={notLoggedUserSender()}></Avatar>}
-            title="John"
-            subheader="Warsaw"
+            title={UserToSendCheck()}
+           // subheader="Warsaw"
             sx={{ backgroundColor: "rgb(255, 101, 91)", padding: "10px" }}
           />
 

@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {Badge, Box, Stack, styled, Typography} from "@mui/material";
 import {avatars, NewAvatar} from "./ChatList";
-
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../redux/store";
+import { fetchUser } from "../../../redux/slices/UserSlice";
+import { fetchRoom, Room } from "../../../redux/slices/UserRoomsSlice";
+import  AuthService from "../../../services/auth.service"
 
 const AvatarBox = styled(Box)`
   display: block;
@@ -23,14 +27,32 @@ const AvatarBox = styled(Box)`
 const totalVisible = 7;
 
 function MatchesSlider():JSX.Element {
+    const dispatch: AppDispatch = useDispatch();
+    const user = useSelector((state: RootState) => state.user);
+    const rooms = useSelector((state: RootState) => state.userRooms);
+  
+   
+    const setReceiver = (room : Room): string => {
+        console.log(user.user )
+        console.log(room)
+        if ( user.user!=null &&
+          user.user._id.toString() !== room.user1
+        ) {
+          return room.user1Name;
+        } else if (room != null) {
+          return room.user2Name;
+        }
+        return "";
+      };
+    
 
     const viewMatches = () => {
         return (
-            avatars.map((el, id) => (
-                (id < totalVisible) && (
-                    <AvatarBox key={id}>
-                        <NewAvatar src={el.avatar} />
-                        <Typography variant="caption">{el.name}</Typography>
+            rooms.rooms.map((room: Room) => (
+                (room.messages.length == 0) && (
+                    <AvatarBox key={room._id}>
+                        <NewAvatar src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cG9ydHJhaXR8ZW58MHx8MHx8&w=1000&q=80" />
+                        <Typography variant="caption">{setReceiver(room)}</Typography>
                     </AvatarBox>
                 )
             ))

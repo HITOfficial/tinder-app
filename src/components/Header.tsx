@@ -1,6 +1,6 @@
 import React from "react";
 import Button from "@mui/material/Button"
-import {Grid, IconButton, makeStyles} from "@mui/material";
+import {Grid, IconButton, makeStyles, Typography} from "@mui/material";
 
 import PersonIcon from '@mui/icons-material/Person';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
@@ -33,8 +33,8 @@ function Header ():JSX.Element {let currentUser = AuthService.getCurrentUser();
     function logOut() {
         AuthService.logout();
         currentUser= undefined
-        EventBus.on("logout", logOut);
-        window.location.reload();
+       // EventBus.on("logout", logOut);
+       // window.location.reload();
     }
     
     console.log(currentUser)
@@ -42,37 +42,33 @@ function Header ():JSX.Element {let currentUser = AuthService.getCurrentUser();
       
             <Grid
                 container
-            sx={HeaderStyles}
+                sx={HeaderStyles}
             >
-                {currentUser && (  <Grid item>
+                {currentUser && (  <><Grid item>
+                <IconButton
+                    component={NavLink}
+                    to="profile"
+                    sx={ActiveStyle}
+                >
+                <PersonIcon />
+                </IconButton>
+            </Grid><Grid
+                item
+                justifyContent="center" >
                     <IconButton
                         component={NavLink}
-                        to="profile"
-                        sx={ActiveStyle}
-                    >
-                        <PersonIcon/>
+                        to="matches"
+                        sx={ActiveStyle}>
+                        <WhatshotIcon />
                     </IconButton>
-                </Grid>
-                )}
-                <Grid
-                    item
-                    justifyContent="center"
-                >
-                        <IconButton
-                            component={NavLink}
-                            to="matches"
-                            sx={ActiveStyle}>
-                            <WhatshotIcon/>
-                        </IconButton>
-                </Grid>
-                <Grid item >
-                        <IconButton
-                            component={NavLink}
-                            to="chat/list"
-                            sx={ActiveStyle}>
-                            <ChatBubbleIcon/>
-                        </IconButton>
-                </Grid>
+                </Grid><Grid item>
+                    <IconButton
+                        component={NavLink}
+                        to="chat/list"
+                        sx={ActiveStyle}>
+                        <ChatBubbleIcon />
+                    </IconButton>
+                </Grid></>)}
                 {currentUser ? (
                     <Grid item >
                          <IconButton
@@ -89,6 +85,7 @@ function Header ():JSX.Element {let currentUser = AuthService.getCurrentUser();
                             component={NavLink}
                             to="logint"
                             sx={ActiveStyle}>
+                                <Typography  variant="h6" >Log In</Typography>
                             <LoginIcon />
                         </IconButton>
                     </Grid><Grid item>
@@ -96,6 +93,7 @@ function Header ():JSX.Element {let currentUser = AuthService.getCurrentUser();
                                 component={NavLink}
                                 to="signup"
                                 sx={ActiveStyle}>
+                                  <Typography  variant="h6" >Sign Up</Typography>
                                 <LoginIcon />
                             </IconButton>
                         </Grid></>

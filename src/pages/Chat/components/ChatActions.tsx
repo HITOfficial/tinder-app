@@ -45,14 +45,27 @@ function ChatActions({ room, user }: Props): JSX.Element {
     formState: { errors },
   } = useForm();
   const dispatch: AppDispatch = useDispatch();
+ 
+useEffect(() => {
 
-  useEffect(() => {
-    socket.on("load_new_message", (msg) => {
-      dispatch(addNewMessage(msg));
-    });
-  }, []);
+  socket.on("load_new_message", (msg) => {
+    console.log(msg)
+    dispatch(addNewMessage(msg));
+
+
+  });
+
+
+ 
+},[])
+  
+    // socket.on("load_new_message", (msg) => {
+    //   console.log(msg)
+    //   dispatch(addNewMessage(msg));
+    // });
 
   const onSubmit = handleSubmit((data: any) => {
+    console.log(room);
     const sender = user._id.toString();
     const receiver =
       user._id.toString() !== room.user1
@@ -66,9 +79,9 @@ function ChatActions({ room, user }: Props): JSX.Element {
       message: data.message,
       date: Date(),
     };
-
+    console.log("emit message")
     socket.emit("new_message", {
-      room: "629b87528cc662bfb1db1aa9",
+      room: room._id,//"629b87528cc662bfb1db1aa9",
       message: message,
     });
   });
