@@ -1,11 +1,9 @@
-import React, { useEffect } from "react";
-import {Badge, Box, Stack, styled, Typography} from "@mui/material";
-import {avatars, NewAvatar} from "./ChatList";
+import React from "react";
+import { Box, Stack, styled, Typography} from "@mui/material";
+import { NewAvatar} from "./ChatList";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../redux/store";
-import { fetchUser } from "../../../redux/slices/UserSlice";
-import { fetchRoom, Room } from "../../../redux/slices/UserRoomsSlice";
-import  AuthService from "../../../services/auth.service"
+import { Room } from "../../../redux/slices/UserRoomsSlice";
 
 const AvatarBox = styled(Box)`
   display: block;

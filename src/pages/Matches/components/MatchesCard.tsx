@@ -109,7 +109,6 @@ function MatchesCard():JSX.Element {
     useEffect(() => {
         if (user.status === "idle") {
             setCurrentUser(AuthService.getCurrentUser())
-            // const currentUser = AuthService.getCurrentUser();
         }
     }, []);
 
@@ -146,13 +145,14 @@ function MatchesCard():JSX.Element {
                     sx={{...CardStyle, backgroundImage: `url(${matches.matches[actualMatchNumber].avatar})`}}
                 >
 
-
                     <CardContent
                         sx={ContentStyle}
                     >
-                        <>{maxMatchNumber}{actualMatchNumber}</>
                         <Typography variant="h3" component="div"
-                                    sx={NameStyle}
+                                    sx={{...NameStyle, "&:after":{marginTop: "5px",
+                                            marginLeft: "10px",
+                                            content: `'${matches.matches[actualMatchNumber].age}'`,
+                                            fontSize: "25px",} }}
                         >
                             {matches.matches[actualMatchNumber].name}
                         </Typography>

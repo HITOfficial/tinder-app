@@ -1,46 +1,220 @@
-# Getting Started with Create React App
+# Tinder App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Uczestnicy: Tomasz Bochnak, Bartosz Czop, Ada Bodziony
 
-## Available Scripts
+Realizacja Projektu: Baza danych i technologie realizacji aplikacji/systemu
 
-In the project directory, you can run:
+Zastosowane technologie Frontend -> struktura przy użyciu biblioteki React Backend -> Express, NodeJS, MongoDB
 
-### `yarn start`
+Tematyka projektu: obraliśmy za cel zbudowanie klona popularnej aplikacji randkowej Tinder, największy nacisk zostanie nałożony na rozbudowanie bazy danych posiadającej wiele funkcji. Przykładowo: możliwość czatu z parą, wieloma typami “swapów” ,wstawianie i usuwanie zdjęć, edycję profilu, matchowanie osób przy podobnych zainteresowaniach, system logowania i rejestracji. Wizualnie postaramy się stworzyć przyjemną dla oka responsywną aplikację, z wykorzystaniem biblioteki React. Serwer łączący się z systemem MongoDB, który wykorzystamy do zbudowania naszej bazy dany, budowany będzie w oparciu o Express puszczony na NodeJS.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+#### Perspektywa użytkownika:
+##### 1. Panel logowania
 
-### `yarn test`
+![panel logowania](https://i.imgur.com/bvNbv9a.png)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Prosty panel logowania, dzięki któremu po zalogowaniu możemy uzyskać dostęp do funkcjonalności aplikacji (dostępne tylko dla zalogowanych użytkowników)
 
-### `yarn build`
+Wysłane zostaje żądanie do serwera, który weryfikuje zgodność danych użytkownika z danymi pobranymi z bazy danych (kolekcja users), a następnie wysyła odpowiedź, wraz z tokenem JWT jeżeli logowanie przebiegło pomyślnie. Przekierowuje również do profilu użytkownika.
+Po zalogowaniu górny pasek zmienia postać dając dostęp do kolejnych podstron. 
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+![górny pasek](https://i.imgur.com/CEdXqiy.png)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Przykładowe komunikaty w przypadku niepowodzenia
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+![komunikat niepowodzenia 1](https://i.imgur.com/hEC9xZM.png)
 
-### `yarn eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+![komunikat niepowodzenia 2](https://i.imgur.com/AfmvnkE.png)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+##### 2. Panel rejestracji
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+![panel rejestracji](https://i.imgur.com/28Gtb6a.png)
 
-## Learn More
+Panel rejestracji gdzie musimy podać swoje podstawowe dane. Walidacja od strony serwera, sprawdza czy w bazie nie istnieje już użytkownik z wprowadzonym przez nas adresem email lub nazwą użytkownika – w przypadku takiej sytuacji użytkownik otrzymuje stosowny komunikat.
+W przypadku pomyślnej rejestracji zostajemy przekierowani do panelu logowania.
+Przykładowy komunikat – pomyślna rejestracja:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+![komunikat pomyślna rejestracja](https://i.imgur.com/iO1KeZw.png)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+##### 3. Profil
+
+![profil](https://i.imgur.com/JoW0pQV.png)
+
+Po zalogowaniu zostajemy przekierowani na stronę naszego profilu, gdzie możemy podejrzeć nasze dane (przy zalogowaniu pobrane z bazy), oraz je aktualizować (wysłany zostaje request do serwera).
+
+
+##### 4. Matches - połączenia
+
+![matches](https://i.imgur.com/cGbTx9m.png)
+
+Miejsce do wyboru użytkowników (swapowania). Przy użyciu przycisków możemy przyjąć, odrzucić lub powrócić do poprzedniej osoby. Przyjęcie użytkownika (matcha) powoduje dodanie go do czatu.
+
+![poprzedni match](https://i.imgur.com/SmosaEn.png)
+
+Przycisk odpowiedzialny za powrót do poprzedniej osoby.
+
+![usuń match](https://i.imgur.com/CafyNej.png)
+
+Przycisk odpowiedzialny za pominięcie osoby.
+
+![dodaj match](https://i.imgur.com/fxcGaVJ.png)
+
+Przyciski odpowiedzialne za przyjęcie osoby.
+
+
+##### 5. Czaty
+Miejsce do rozmów z innymi użytkownikami, których zeswapowaliśmy lub oni zeswapowali nas ( nowy match ). New Matches to osoby z którymi jeszcze nie rozpoczęliśmy konwersacji. 
+Lista Messages to wszystkie dostępne czaty użytkownika. 
+
+![czaty użytkownika](https://i.imgur.com/uf7kiQS.png)
+
+Czat możliwy z osobami, które zeswapowaliśmy (daliśmy aplikacji znać, że mamy ochotę porozmawiać z daną osobą).  
+Przykładowe działanie czatu, po wejściu w konkretną konwersację:
+
+![przykładowy czat 1](https://i.imgur.com/OBvYzC2.png)
+
+
+![przykładowy czat 2](https://i.imgur.com/LEjNC4o.png)
+
+#### Kolekcje
+
+##### 1. Users
+
+```js
+UserSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    rooms: [String],
+    age: {
+        type: Number,
+        required: true
+    },
+    location: {
+        type: String,
+        required: true
+    },
+    sex: {
+        type: String,
+        required: true
+    },
+    sexPreference: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    gallery: [String]
+}, {versionKey: false});
+```
+
+##### Przykładowy dokument
+```json
+{
+    "_id":{"$oid":"629be231b801aab61e00ac68"},
+    "name":"test",
+    "email":"test@test.pl",
+    "password":"$2a$08$cTz1lkDpNHzrx.UcYPNfOujBK68g/LYhUvnlLS7VssnAsfIrh/nKa",
+    "rooms":["62b0ddf7af50c418579f782a","62b11eb5af50c418579f782b"],
+    "age":{"$numberInt":"21"},
+    "location":"test",
+    "sex":"woman",
+    "sexPreference":"men",
+    "description":"test",
+    "gallery":[],
+    "avatar":"https://images.unsplash.com/photo-1614283233556-f35b0c801ef1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjh8fHByb2ZpbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60"
+}
+```
+
+##### 2. Rooms
+
+```js
+const RoomSchema = new mongoose.Schema({
+    user1: {
+        type: String,
+        required: true,
+    },
+    user2: {
+        type: String,
+        required: true,
+    },
+    user1Avatar: {
+        type: String,
+        required: true,
+    },
+    user2Avatar: {
+        type: String,
+        required: true,
+    },
+    user1Name: {
+        type: String,
+        required: true,
+    },
+    user2Name: {
+        type: String,
+        required: true,
+      },
+    messages: [
+    {
+        type: MessageSchema,
+    },
+    ],
+});
+```
+```js
+MessageSchema = new mongoose.Schema({
+  sender: {
+    type: String,
+    required: true,
+  },
+  receiver: {
+    type: String,
+    required: true,
+  },
+  message: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: String,
+    required: true,
+  },
+});
+```
+##### Przykładowy dokument
+```json
+{   
+    "_id":{"$oid":"62b0ddf7af50c418579f782a"},
+    "user1":"629be231b801aab61e00ac68",
+    "user2":"629cecf6e79ee13060c92124",
+    "user1Avatar":"https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cG9ydHJhaXR8ZW58MHx8MHx8&w=1000&q=80",
+    "user2Avatar":"https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
+    "messages":[{
+        "sender":"629cecf6e79ee13060c92124",
+        "receiver":"629be231b801aab61e00ac68",
+        "message":"hi","date":"Mon Jun 20 2022 22:56:03 GMT+0200 (czas środkowoeuropejski letni)",
+        "_id":{"$oid":"62b0dee3c44698b7ea85cba5"}
+        },{
+        "sender":"629cecf6e79ee13060c92124",
+        "receiver":"629be231b801aab61e00ac68",
+        "message":":)",
+        "date":"Mon Jun 20 2022 23:01:18 GMT+0200 (czas środkowoeuropejski letni)",
+        "_id":{"$oid":"62b0e01ec44698b7ea85cbbc"}}],
+    "user1Name":"test",
+    "user2Name":"test2"
+}
+```
