@@ -10,11 +10,12 @@ var jwt = require("jsonwebtoken");
 
 const router = express.Router();
 const { authJwt } = require("../middlewares");
+/*
 router.get("/users/:userID", async (req, res) => {
-  const user = await User.findOne({ _id: req.body._id });
+  const user = await User.findOne({ _id: req.params._id });
   res.send(user);
 });
-
+*/
 router.get("/users", [authJwt.verifyToken], async (req, res) => {
   try{
   const users = await User.find();
@@ -27,23 +28,17 @@ router.get("/users", [authJwt.verifyToken], async (req, res) => {
 
 })
 
-router.get("/users/:name", [authJwt.verifyToken], async (req, res) => {
-const user = await User.findOne({ name: req.params.name })
-res.send(user)
-})
+// router.get("/users/:name", [authJwt.verifyToken], async (req, res) => {
+// const user = await User.findOne({ name: req.params.name })
+// res.send(user)
+// })
 
 router.post("/api/auth/signin/:name/:password",async(req, res) => {
- // console.log(req.params);
-  
 
   const user = await User.findOne({
     name: req.params.name,
     
   }).then( user=> {
-      
-     //console.log(req.params);
-     
-   //  console.log(res.headers);
       if (!user) {
        res.status(404).send({ message: "User Not found." });
         return;
@@ -73,7 +68,7 @@ router.post("/api/auth/signin/:name/:password",async(req, res) => {
   })
 
 router.post( "/api/auth/signup",
-[  verifySignUp.checkDuplicateUsernameOrEmail],
+[verifySignUp.checkDuplicateUsernameOrEmail],
 async (req, res) => {
    try{
   console.log(req.query);
@@ -88,7 +83,7 @@ async (req, res) => {
       name: req.query.name,
       email: req.query.email,
       password: bcrypt.hashSync(req.query.password, 8),
-      description : "test",
+      description : "-",
       sexPreference: req.query.sexPreference,
       sex:  req.query.sex,
       location: req.query.location,
@@ -105,6 +100,27 @@ async (req, res) => {
 
 })
 
+router.put('/users/update',[authJwt.verifyToken], async(req, res) => {
+  try{
+  var db = req.db;
+  var userToUpdate = req.query;
+  console.log(userToUpdate)
+  const users = await User.updateOne({ email: req.query.email}, req.query)
+  const user = await User.findOne({ email: req.query.email});
+ 
+  var token = jwt.sign({ id: user.id }, config.secret, {
+    expiresIn: 86400 // 24 hours
+  });
+ 
+  res.status(200).send({
+    user, token: token
+});
+}
+catch (err) {
+  res.status(500).send({ message: err });
+  return;
+}
+});
 
 router.get("/users", async (req, res) => {
   const users = await User.find();

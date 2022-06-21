@@ -74,7 +74,7 @@ exports.signin = (req, res) => {
         id: user._id,
         username: user.username,
         email: user.email,
-        //accessToken: token,
+        token: token,
         location: user.location,
         sex: user.sex,
         sexPreference: user.sexPreference,

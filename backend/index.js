@@ -3,7 +3,7 @@ const app = express();
 const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
-
+const  uuid  = require("uuid4");
 const route = require("./routes/routes");
 
 app.use(cors());
@@ -30,6 +30,7 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("connected user: ", socket.id);
+
   // new room
   // const room = new Room({
   //   user1: "629b86e2055f68ce3922f274",
@@ -41,7 +42,8 @@ io.on("connection", (socket) => {
   //   messages: [],
   // });
   // room.save();
-
+  
+  
   // new user
   // const user = new User({
   //   name: "natasha",
@@ -70,13 +72,17 @@ io.on("connection", (socket) => {
   //   console.log(user)
   // );
 
+
+
   // loading room messages
   // socket.on("load_room", (roomID) => {
   //   Room.find({ _id: roomID }, (err, data) => {
   //     io.emit("room_messages", data);
   //   });
   // });
-
+   
+  
+  
   socket.on("new_message", async ({ room, message }) => {
     console.log("NEW MSG");
     const msg = new Message({
@@ -93,25 +99,26 @@ io.on("connection", (socket) => {
         },
       }
     ).then(() => console.log(room, msg));
+
     io.emit("load_new_message", msg);
     // socket.broadcast.emit("load_new_message", "world");
 
     // Room.updateOne(
-    //     {_id: roomID},
-    //     {
-    //       $push: {
-    //         messages: {
-    //           sender: message.sender,
-    //           receiver: message.receiver,
-    //           message: message.message,
-    //           date: message.date,
-    //         },
-    //       },
-    //     }
-    // ).then((msg) => {
+    //    {_id: roomID},
+    //    {
+    //      $push: {
+    //        messages: {
+    //          sender: message.sender,
+    //          receiver: message.receiver,
+    //          message: message.message,
+    //          date: message.date,
+    //        },
+    //      },
+    //    }
+    //).then((msg) => {
     //   console.log("msg to emit: ", msg);
     //   io.emit(msg);
-    // });
+    //});
   });
 
   socket.on("hello", () => {
