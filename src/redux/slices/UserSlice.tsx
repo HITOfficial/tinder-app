@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import authHeader from "../../services/auth-header";
 
 const POST_URL = "http://localhost:3001/users/";
 

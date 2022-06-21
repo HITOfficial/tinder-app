@@ -31,6 +31,7 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("connected user: ", socket.id);
 
+
   // new room
   // const room = new Room({
   //   user1: "629b86e2055f68ce3922f274",
@@ -120,10 +121,7 @@ io.on("connection", (socket) => {
     //   io.emit(msg);
     //});
   });
-
-  socket.on("hello", () => {
-    console.log("HELLO :)");
-  });
+  
 
   socket.on("disconnect", () => {
     console.log("disconnected user: ", socket.id);

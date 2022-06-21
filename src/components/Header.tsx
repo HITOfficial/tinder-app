@@ -1,15 +1,12 @@
-import React from "react";
-import Button from "@mui/material/Button"
-import {Grid, IconButton, makeStyles, Typography} from "@mui/material";
+import React, { useState} from "react";
+import {Grid, IconButton, Typography} from "@mui/material";
 
 import PersonIcon from '@mui/icons-material/Person';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
-import {Link, NavLink} from "react-router-dom";
-import Profile from "../pages/Profile/Profile";
-import Matches from "../pages/Matches/Matches";
+import { NavLink} from "react-router-dom";
 import AuthService from "../services/auth.service"
 const HeaderStyles= {
     width: "100%",
@@ -18,7 +15,6 @@ const HeaderStyles= {
     justifyContent: "space-between",
     alignItems: "center",
 }
-import EventBus from "../common/EventBus";
 
 
 
@@ -29,15 +25,13 @@ const ActiveStyle = {
 }
 
 
-function Header ():JSX.Element {let currentUser = AuthService.getCurrentUser();
+function Header ():JSX.Element {
+    const [currentUser, setCurrentUser] = useState(AuthService.getCurrentUser());
     function logOut() {
         AuthService.logout();
-        currentUser= undefined
-       // EventBus.on("logout", logOut);
-       // window.location.reload();
+        setCurrentUser(undefined)
     }
-    
-    console.log(currentUser)
+
     return (
       
             <Grid

@@ -59,10 +59,6 @@ useEffect(() => {
  
 },[])
   
-    // socket.on("load_new_message", (msg) => {
-    //   console.log(msg)
-    //   dispatch(addNewMessage(msg));
-    // });
 
   const onSubmit = handleSubmit((data: any) => {
     console.log(room);

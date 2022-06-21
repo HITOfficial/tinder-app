@@ -5,6 +5,8 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import StarIcon from '@mui/icons-material/Star';
 import BoltIcon from '@mui/icons-material/Bolt';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import {AppDispatch} from "../../../redux/store";
+import {useDispatch} from "react-redux";
 
 
 const BoxContainer = styled(Box)`
@@ -25,23 +27,31 @@ const FabIcon = styled(Fab)`
   }
 `
 
-function MatchesOptions ():JSX.Element {
+interface  Props {
+    nextMatch: (x:boolean) => void
+    prevMatch: (x:void) => void
+}
+
+
+function MatchesOptions ({nextMatch, prevMatch}: Props):JSX.Element {
+    const dispatch: AppDispatch = useDispatch();
+
     return (
         <BoxContainer
         >
-            <FabIcon>
+            <FabIcon onClick={() => prevMatch()}>
                 <ReplayIcon sx={{ color: "#e8b023"}}/>
             </FabIcon>
-            <FabIcon>
+            <FabIcon onClick={() => nextMatch(false)}>
                 <CloseIcon sx={{ color: "#d51f34"}}/>
             </FabIcon>
-            <FabIcon>
+            <FabIcon onClick={() => nextMatch(true)}>
                 <BoltIcon sx={{ color: "#7616c0"}}/>
             </FabIcon>
-            <FabIcon>
+            <FabIcon onClick={() => nextMatch(true)}>
                 <FavoriteIcon sx={{ color: "#0ac785"}}/>
             </FabIcon>
-            <FabIcon>
+            <FabIcon onClick={() => nextMatch(true)}>
                 <StarIcon sx={{ color: "#cccccc"}}/>
             </FabIcon>
         </BoxContainer>

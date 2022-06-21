@@ -15,7 +15,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchMessages } from "../../../redux/slices/MessagesSlice";
 import { Message } from "../../../redux/slices/UserRoomsSlice";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
-import { io } from "socket.io-client";
 import { fetchUser } from "../../../redux/slices/UserSlice";
 import { useParams } from "react-router-dom";
 import { fetchRoomData } from "../../../redux/slices/RoomSlice";
@@ -31,15 +30,7 @@ const CardContentStyle = {
   paddingBottom: 10,
 };
 
-// socket
-const socket = io("http://localhost:3000");
 
-// const USER1 = "user1";
-// const USER2 = "user2";
-// const SENDER_AVATAR =
-//   "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cG9ydHJhaXR8ZW58MHx8MHx8&w=1000&q=80";
-// const RECEIVER_AVATAR =
-//   "https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80";
 
 function ChatBox(): JSX.Element {
   const dispatch: AppDispatch = useDispatch();

@@ -16,17 +16,17 @@ router.get("/users/:userID", async (req, res) => {
   res.send(user);
 });
 */
-router.get("/users", [authJwt.verifyToken], async (req, res) => {
-  try{
-  const users = await User.find();
-  res.send(users)
-}
-  catch (err) {
-      console.log(err);
-      return;
-  }
-
-})
+// router.get("/users", [authJwt.verifyToken], async (req, res) => {
+//   try{
+//   const users = await User.find();
+//   res.send(users)
+// }
+//   catch (err) {
+//       console.log(err);
+//       return;
+//   }
+//
+// })
 
 // router.get("/users/:name", [authJwt.verifyToken], async (req, res) => {
 // const user = await User.findOne({ name: req.params.name })
@@ -34,7 +34,6 @@ router.get("/users", [authJwt.verifyToken], async (req, res) => {
 // })
 
 router.post("/api/auth/signin/:name/:password",async(req, res) => {
-
   const user = await User.findOne({
     name: req.params.name,
     
@@ -151,9 +150,9 @@ router.get("/rooms/:id", async (req, res) => {
 router.post("/rooms/:id", async (req, res) => {
   const message = new Message({
     sender: req.body.sender,
-    receiver: req.body.sender,
-    message: req.body.sender,
-    date: req.body.sender,
+    receiver: req.body.receiver,
+    message: req.body.message,
+    date: req.body.date,
   });
   await Room.updateOne(
     { _id: req.body._id },
@@ -163,7 +162,44 @@ router.post("/rooms/:id", async (req, res) => {
       },
     }
   );
-  io.emit("message", { ...req.body, _id: message._id });
+
+  // WRNG
+  // io.emit("message", { ...req.body, _id: message._id });
 });
+
+
+router.post("/room/add", async (req, res) => {
+    const room = new Room({
+      user1: req.query.user1,
+        user1Name: req.query.user1Name,
+      user1Avatar: req.query.user1Avatar,
+      user2: req.query.user2,
+        user2Name: req.query.user2Name,
+        user2Avatar: req.query.user2Avatar,
+      messages: [],
+    });
+
+    room.save().then((e) => console.log("added new room", e))
+    await User.updateOne(
+        { _id: req.query.user1 },
+        {
+            $push: {
+                rooms: room._id,
+            },
+        }
+    );
+
+    await User.updateOne(
+        { _id: req.query.user2 },
+        {
+            $push: {
+                rooms: room._id,
+            },
+        }
+    );
+});
+
+
+
 
 module.exports = router;

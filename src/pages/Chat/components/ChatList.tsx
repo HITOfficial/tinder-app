@@ -151,7 +151,7 @@ export const avatars: NewMatch[] = [
   {
     name: "Anna",
     avatar:
-      "https://images.unsplash.com/photo-1614283233556-f35b0c801ef1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjh8fHByb2ZpbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60",
+        "https://images.unsplash.com/photo-1614283233556-f35b0c801ef1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjh8fHByb2ZpbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60",
     message: "Hi :)",
     id: 18,
   },
@@ -184,14 +184,10 @@ function ChatList(): JSX.Element {
       //dispatch(fetchUser("62825b67f5c2addc780c65e1"));
       const currentUser = AuthService.getCurrentUser();
       dispatch(fetchUser(currentUser.user._id));
-     console.log("test")
-    
     }
   }, []);
 
   useEffect(() => {
-   
-    
     AuthService.getCurrentUser();
     console.log(user);
   }, [user]);

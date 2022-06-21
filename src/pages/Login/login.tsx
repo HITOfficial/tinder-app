@@ -1,25 +1,16 @@
-
 import Button from "@mui/material/Button"
-//import Field from "@mui/material/Field"
 import AuthService from "../../services/auth.service";
 import * as React from 'react';
 import {
   Formik,
-  FormikHelpers,
-  FormikProps,
   Form,
   Field,
-  FieldProps,
 } from 'formik';
 import { useNavigate } from "react-router-dom";
 
-import { Box, Input, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import {
-    Autocomplete,
     TextField,
-    Select,
-    Switch,
-    ToggleButtonGroup,
   } from 'formik-mui';
 interface MyFormValues {
   email: string;
@@ -45,7 +36,7 @@ function LoginT(): JSX.Element {
           AuthService.login(values.email, values.password).then(
             () => {
              navigate("/profile");
-           //  window.location.reload();
+                setTimeout(() => window.location.reload() ,500)
             },
             (       error: { response: { data: { message: any; }; }; message: any; toString: () => any; }) => {
              
@@ -59,9 +50,6 @@ function LoginT(): JSX.Element {
                 alert(JSON.stringify(resMessage));
             }
           );
-          
-           // window.location.reload();
-    
         }}
       >
         <Form>

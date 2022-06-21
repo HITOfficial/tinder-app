@@ -38,7 +38,6 @@ class AuthService {
   }
 
   getCurrentUser() {
-    //localStorage.clear()
     console.log("current user");
     
     const userStr = localStorage.getItem("user");

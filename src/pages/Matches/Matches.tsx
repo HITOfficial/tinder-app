@@ -3,6 +3,7 @@ import MatchesCard from "./components/MatchesCard";
 import UserService from "../../services/user.service";
 import { useNavigate } from "react-router-dom";
 function Matches():JSX.Element {
+
     const navigate = useNavigate();
     UserService.getUserBoard().then(
         response => {

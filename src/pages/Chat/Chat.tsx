@@ -1,6 +1,4 @@
 import React from "react";
-import ChatBox from "./components/ChatBox";
-import ChatList from "./components/ChatList";
 import {Outlet} from "react-router-dom";
 import UserService from "../../services/user.service";
 import { useNavigate } from "react-router-dom";

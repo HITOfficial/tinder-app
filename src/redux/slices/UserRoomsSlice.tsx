@@ -1,4 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
+import axios from "axios";
 
 const POST_URL = "http://localhost:3001/rooms/";
 
@@ -34,10 +35,29 @@ export const fetchRoom = createAsyncThunk(
   }
 );
 
+
+export const addNewRoom = createAsyncThunk(
+    "userRooms/addRoom",
+    async (room: Room, { rejectWithValue }) => {
+      try {
+        console.log("HHH:", room)
+        const response = await axios.post("http://localhost:3001/room/add",null, {params: {...room}} );
+        return response.data;
+      } catch (error) {
+        console.log("POST new room ERROR:", error);
+        return rejectWithValue(error);
+      }
+    }
+);
+
 const userSlice = createSlice({
   name: "userRooms",
   initialState,
-  reducers: {},
+  reducers: {
+    addNewRoom: (state, action: PayloadAction) => {
+
+      },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchRoom.pending, (state, action) => {
       state.status = "loading";

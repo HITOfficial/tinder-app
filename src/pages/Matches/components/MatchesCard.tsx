@@ -1,15 +1,19 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Box, Card, CardContent, Collapse, Fab, styled, Typography} from "@mui/material";
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import MatchesOptions from "./MatchesOptions";
 import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../../../redux/store";
+import AuthService from "../../../services/auth.service";
+import {fetchUser} from "../../../redux/slices/UserSlice";
+import {fetchMatches} from "../../../redux/slices/MatchesSlice";
+import {addNewRoom} from "../../../redux/slices/UserRoomsSlice";
 
 const CardStyle = {
     backgroundColor: 'grey',
-    backgroundImage: "url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cG9ydHJhaXR8ZW58MHx8MHx8&w=1000&q=80')",
     backgroundPosition:"contained",
     backgroundRepeat: "no-repeat",
     backgroundAttachment: "fixed",
@@ -19,6 +23,7 @@ const CardStyle = {
     width: "100%",
     height: 500,
     position: "relative",
+    color: "white"
 }
 
 const BoxStyle = {
@@ -69,6 +74,66 @@ const NameStyle =  {
 
 function MatchesCard():JSX.Element {
     const [expanded, setExpanded] = useState<boolean>(false);
+    const dispatch: AppDispatch = useDispatch();
+
+    const [actualMatchNumber,setActualMatchNumber] = useState(0);
+    const [maxMatchNumber,setMaxMatchNumber] = useState(0);
+    const [currentUser,setCurrentUser] = useState<any>(null);
+
+
+
+    const user = useSelector((state: RootState) => state.user);
+    const matches = useSelector((state: RootState) => state.matches);
+
+
+    const nextMatch = (addRoom: boolean) => {
+        setActualMatchNumber(() => (actualMatchNumber+1) % maxMatchNumber)
+        if (addRoom && user.user) {
+            dispatch(addNewRoom({
+                messages: [],
+                _id: 123,
+                user1: user.user._id.toString(),
+                user1Name: user.user.name,
+                user1Avatar: user.user.avatar,
+                user2: matches.matches[actualMatchNumber]._id.toString(),
+                user2Name: matches.matches[actualMatchNumber].name,
+                user2Avatar: matches.matches[actualMatchNumber].avatar
+            }))
+        }
+    }
+
+    const prevMatch = () => {
+        setActualMatchNumber(() => actualMatchNumber-1 < 0 ? Math.max(maxMatchNumber-1, 0): actualMatchNumber -1)
+    }
+
+    useEffect(() => {
+        if (user.status === "idle") {
+            setCurrentUser(AuthService.getCurrentUser())
+            // const currentUser = AuthService.getCurrentUser();
+        }
+    }, []);
+
+    useEffect(() => {
+        if (currentUser !== null) {
+            dispatch(fetchUser(currentUser.user._id));
+        }
+    }, [currentUser]);
+
+
+    useEffect(() => {
+        if (user.status === "successed") {
+            dispatch(fetchMatches());
+        }
+        AuthService.getCurrentUser();
+    }, [user]);
+
+    useEffect(() => {
+        console.log("matches :)D", matches.status, matches.matches)
+        if(matches.matches.length > 0) {
+            setMaxMatchNumber(matches.matches.length)
+        }
+    }, [matches]);
+
 
     const toggleExpanded = () => {
         setExpanded(!expanded);
@@ -76,56 +141,64 @@ function MatchesCard():JSX.Element {
 
     return (
         <Box>
-            <Card
-                sx={CardStyle}
-            >
-                <CardContent
-                    sx={ContentStyle}
+            {maxMatchNumber > 0 ? <>
+                <Card
+                    sx={{...CardStyle, backgroundImage: `url(${matches.matches[actualMatchNumber].avatar})`}}
                 >
-                    <Typography variant="h3" component="div"
-                                sx={NameStyle}
+
+
+                    <CardContent
+                        sx={ContentStyle}
                     >
-                        Natasha
-                    </Typography>
-                    <Box component="div"
-                         sx={BoxStyle}
-                    >
-                        <WorkOutlineIcon sx={IconStyle}/>
-                        <Typography
-                            variant="subtitle1">
-                            Software engineer
+                        <>{maxMatchNumber}{actualMatchNumber}</>
+                        <Typography variant="h3" component="div"
+                                    sx={NameStyle}
+                        >
+                            {matches.matches[actualMatchNumber].name}
                         </Typography>
-                    </Box>
+                        <Box component="div"
+                             sx={BoxStyle}
+                        >
+                            <WorkOutlineIcon sx={IconStyle}/>
+                            <Typography
+                                variant="subtitle1">
+                                Software engineer
+                            </Typography>
+                        </Box>
 
-                    <Box component="div"
-                         sx={BoxStyle}
-                    >
-                        <LocationOnOutlinedIcon
-                            sx={IconStyle}
-                        />
-                        <Typography
-                            variant="subtitle1">
-                            3km away
+                        <Box component="div"
+                             sx={BoxStyle}
+                        >
+                            <LocationOnOutlinedIcon
+                                sx={IconStyle}
+                            />
+                            <Typography
+                                variant="subtitle1">
+                                3km away
+                            </Typography>
+                        </Box>
+                        <ExpandMore
+                            expand={expanded}
+                            onClick={toggleExpanded}
+                        >
+                            <ArrowLeftIcon />
+                        </ExpandMore>
+                    </CardContent>
+                </Card>
+
+
+                <Collapse in={expanded} timeout="auto" unmountOnExit>
+                    <CardContent>
+                        <Typography paragraph>
+                            {matches.matches[actualMatchNumber].description}
                         </Typography>
-                    </Box>
-                    <ExpandMore
-                        expand={expanded}
-                        onClick={toggleExpanded}
-                    >
-                        <ArrowLeftIcon />
-                    </ExpandMore>
-                </CardContent>
-            </Card>
+                    </CardContent>
+                </Collapse>
+                <MatchesOptions nextMatch={nextMatch} prevMatch={prevMatch}/>
+            </> : <Box>users to load </Box>
 
+            }
 
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
-                <CardContent>
-                    <Typography paragraph>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum dolorum iure numquam officia, pariatur quibusdam quisquam ratione repellat reprehenderit voluptate! Accusamus iusto labore laudantium molestias quo quod rerum, saepe vitae!
-                    </Typography>
-                </CardContent>
-            </Collapse>
-            <MatchesOptions/>
         </Box>
     )
 }
