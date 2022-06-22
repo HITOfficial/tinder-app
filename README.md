@@ -218,21 +218,240 @@ MessageSchema = new mongoose.Schema({
     "user2Name":"test2"
 }
 ```
+
+
+
+
 #### Backend oraz współpraca z bazą danych MongoDB
 
 ##### Rejestracja użytkownika
-![image](https://user-images.githubusercontent.com/72196988/174889271-107ed0f5-6da4-4be7-b4a1-1c319d3bc4de.png)
+```js
+router.post( "/api/auth/signup",
+[verifySignUp.checkDuplicateUsernameOrEmail],
+async (req, res) => {
+   try{
+  console.log(req.query);
+   }
+   catch (err) {
+      console.log(err);
+      return;
+    }
+  const user = new User({
+      name: req.query.name,
+      email: req.query.email,
+      password: bcrypt.hashSync(req.query.password, 8),
+      description : "-",
+      sexPreference: req.query.sexPreference,
+      sex:  req.query.sex,
+      location: req.query.location,
+      age: req.query.age
+    });
+  await user.save((err, user) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+      res.send({ message: "User was registered successfully!" });
+  });
+})
+```
 
-Middleware, który umożliwia sprawdzenie czy email lub nazwa użytkownika nie istnieje już na bazie
-![image](https://user-images.githubusercontent.com/72196988/174889423-f35edc2a-64ef-450c-90f5-afad7e66420f.png)
+###### Middleware, który umożliwia sprawdzenie czy email lub nazwa użytkownika nie istnieje już w bazie
+```js
+checkDuplicateUsernameOrEmail = (req, res, next) => {
+  // Username
+  User.findOne({
+    name: req.query.name
+  }).exec((err, user) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    if (user) {
+      res.status(400).send({ message: "Failed! Username is already in use!" });
+      return;
+    }
+
+    // Email
+    User.findOne({
+      email: req.query.email
+    }).exec((err, user) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      if (user) {
+        res.status(400).send({ message: "Failed! Email is already in use!" });
+        return;
+      }
+
+      next();
+    });
+  });
+};
+```
+
+
 
 ##### Logowanie użytkownika wraz z walidacją - zwracane zostają dane użytkownika oraz token JWT
-![image](https://user-images.githubusercontent.com/72196988/174889389-9690de19-d3d2-4e88-8a4d-eda71e7b8cf9.png)
+```js
+router.post("/api/auth/signin/:name/:password",async(req, res) => {
+  const user = await User.findOne({
+    name: req.params.name,
+    
+  }).then( user=> {
+      if (!user) {
+       res.status(404).send({ message: "User Not found." });
+        return;
+      } 
+      
+     
+      var passwordIsValid = bcrypt.compareSync(
+      req.params.password,
+      user.password
+      );
 
-Funkcja do weryfikacji czy zapytania do serwera zawierają właściwy token JWT:
-![image](https://user-images.githubusercontent.com/72196988/174889828-96bcea6f-b384-4c9a-acbd-3f70dd9d7c03.png)
+      if (!passwordIsValid) {
+        return res.status(401).send({
+          token: null,
+          message: "Invalid Password!"
+        });
+      }
+
+      var token = jwt.sign({ id: user.id }, config.secret, {
+        expiresIn: 86400 // 24 hours
+      });
+     
+      console.log(token);
+      res.send({user, token: token})
+    });
  
-oraz przykładowe zastosowanie powyższej weryfikacji:                           
-![image](https://user-images.githubusercontent.com/72196988/174889955-6157d04c-ea8a-4401-ae62-86d26d151f13.png)
+  })
+  ```
+
+###### Funkcja do weryfikacji czy zapytania do serwera zawierają właściwy token JWT:
+```js
+verifyToken = (req, res, next) => {
+  let token = req.headers["x-access-token"];
+
+  if (!token) {
+    return res.status(403).send({ message: "No token provided!" });
+  }
+
+  jwt.verify(token, config.secret, (err, decoded) => {
+    if (err) {
+      return res.status(401).send({ message: "Unauthorized!" });
+    }
+    req.userId = decoded.id;
+    next();
+  });
+};
+```
+ 
+###### oraz przykładowe zastosowanie powyższej weryfikacji:                           
+```js
+router.get("/users", [authJwt.verifyToken], async (req, res) => {
+	try {
+		const users = await User.find();
+		res.send(users)
+	}
+	catch (err) {
+		console.log(err);
+		return;
+	}
+})
+```
+
+##### Operacje na Users
+###### Zwrócenie wszystkich użytkowników
+```js
+router.get("/users", async (req, res) => {
+  const users = await User.find();
+  res.send(users);
+});
+```
+
+###### Zwrócenie użytkownika o danym id
+```js
+router.get("/users/:id", async (req, res) => {
+  const user = await User.findOne({ _id: req.params.id });
+  res.send(user);
+});
+```
+
+
+
+##### Operacje na Rooms
+###### Zwrócenie wszystkich pokoi
+```js
+router.get("/rooms", async (req, res) => {
+  const rooms = await Room.find();
+  res.send(rooms);
+});
+```
+
+###### Zwrócenie pokoju o danym id
+```js
+router.get("/rooms/:id", async (req, res) => {
+  const room = await Room.findById(req.params.id);
+  res.send(room);
+});
+```
+
+###### Dodanie nowego pokoju
+```js
+router.post("/room/add", async (req, res) => {
+    const room = new Room({
+      user1: req.query.user1,
+        user1Name: req.query.user1Name,
+      user1Avatar: req.query.user1Avatar,
+      user2: req.query.user2,
+        user2Name: req.query.user2Name,
+        user2Avatar: req.query.user2Avatar,
+      messages: [],
+    });
+
+    room.save().then((e) => console.log("added new room", e))
+    await User.updateOne(
+        { _id: req.query.user1 },
+        {
+            $push: {
+                rooms: room._id,
+            },
+        }
+    );
+
+    await User.updateOne(
+        { _id: req.query.user2 },
+        {
+            $push: {
+                rooms: room._id,
+            },
+        }
+    );
+});
+```
+
+###### Dodanie wiadomości do pokoju o danym id
+```js
+router.post("/rooms/:id", async (req, res) => {
+  const message = new Message({
+    sender: req.body.sender,
+    receiver: req.body.receiver,
+    message: req.body.message,
+    date: req.body.date,
+  });
+  await Room.updateOne(
+    { _id: req.body._id },
+    {
+      $push: {
+        messages: message,
+      },
+    }
+  );
+});
+```
 
 
