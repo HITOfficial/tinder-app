@@ -454,4 +454,254 @@ router.post("/rooms/:id", async (req, res) => {
 });
 ```
 
+#### Czat - komunikacja backendu z frontendem przy użyciu socketów
+```tsx
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
 
+io.on("connection", (socket) => {
+  console.log("connected user: ", socket.id);
+  
+socket.on("new_message", async ({ room, message }) => {
+    console.log("NEW MSG");
+    const msg = new Message({
+      sender: message.sender,
+      receiver: message.receiver,
+      message: message.message,
+      date: message.date,
+    });
+    await Room.updateOne(
+      { _id: room },
+      {
+        $push: {
+          messages: msg,
+        },
+      }
+    ).then(() => console.log(room, msg));
+
+    io.emit("load_new_message", msg);
+  });
+  socket.on("disconnect", () => {
+    console.log("disconnected user: ", socket.id);
+  });
+});
+
+server.listen(3001, () => {
+  console.log("server running");
+});
+```
+
+
+
+#### Redux - pośrednik między frontendem i backendem
+
+##### MatchesSlice - odpowiedzialny za "swapowanie" i dodawanie użytkowników do pary
+```tsx
+const POST_URL = "http://localhost:3001/users";
+
+const initialState: {
+  matches: User[];
+  status: "idle" | "loading" | "successed" | "failed";
+} = { matches: [], status: "idle" };
+
+export const fetchMatches = createAsyncThunk(
+    "matches/fetchMatches",
+    async () => {
+      return fetch(POST_URL ).then((res) => res.json());
+    }
+);
+
+const matchesSlice = createSlice({
+  name: "matches",
+  initialState,
+  reducers: {
+
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchMatches.pending, (state, action) => {
+      state.status = "loading";
+    });
+    builder.addCase(fetchMatches.fulfilled, (state, action) => {
+      state.matches = action.payload ;
+      state.status = "successed";
+    });
+    builder.addCase(fetchMatches.rejected, (state, action) => {
+      state.status = "failed";
+    });
+  },
+});
+```
+
+##### UserRoomSlice - odpowiedzialny za pokoje użytkownika
+
+```tsx
+const POST_URL = "http://localhost:3001/rooms/";
+
+export interface Message {
+  _id: number;
+  sender: string;
+  receiver: string;
+  message: string;
+  date: string;
+}
+
+export interface Room {
+  _id: number;
+  user1: string;
+  user2: string;
+  user1Avatar: string;
+  user2Avatar: string;
+  user1Name: string;
+  user2Name: string;
+  messages: Message[];
+}
+
+const initialState: {
+  rooms: Room[];
+  status: "idle" | "loading" | "successed" | "failed";
+} = { rooms: [], status: "idle" };
+
+export const fetchRoom = createAsyncThunk(
+  "rooms/fetchRoom",
+  async (id: string) => {
+    console.log(id)
+    return fetch(POST_URL + id).then((res) => res.json());
+  }
+);
+
+
+export const addNewRoom = createAsyncThunk(
+    "userRooms/addRoom",
+    async (room: Room, { rejectWithValue }) => {
+      try {
+        console.log("HHH:", room)
+        const response = await axios.post("http://localhost:3001/room/add",null, {params: {...room}} );
+        return response.data;
+      } catch (error) {
+        console.log("POST new room ERROR:", error);
+        return rejectWithValue(error);
+      }
+    }
+);
+
+const userSlice = createSlice({
+  name: "userRooms",
+  initialState,
+  reducers: {
+    addNewRoom: (state, action: PayloadAction) => {
+
+      },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchRoom.pending, (state, action) => {
+      state.status = "loading";
+    });
+    builder.addCase(fetchRoom.fulfilled, (state, action) => {
+      state.rooms.push(action.payload);
+      state.status = "successed";
+    });
+    builder.addCase(fetchRoom.rejected, (state, action) => {
+      state.status = "failed";
+    });
+  },
+});
+```
+
+##### RoomSlice - odpowiedzialny za pokój w którym użytkownik aktualnie czatuje
+
+```tsx
+const POST_URL = "http://localhost:3001/rooms/";
+
+const initialState: {
+  room: Room | null;
+  status: "idle" | "loading" | "successed" | "failed";
+} = { room: null, status: "idle" };
+
+export const fetchRoomData = createAsyncThunk(
+  "rooms/fetchRoom",
+  async (id: string) => {
+    return fetch(POST_URL + id).then((res) => res.json());
+  }
+);
+
+const roomSlice = createSlice({
+  name: "userRooms",
+  initialState,
+  reducers: {
+    addNewMessage: (state, action: PayloadAction<Message>) => {
+      if (state.room) {
+        state.room.messages.push(action.payload);
+      }
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchRoomData.pending, (state, action) => {
+      state.status = "loading";
+    });
+    builder.addCase(fetchRoomData.fulfilled, (state, action) => {
+      state.room = action.payload;
+      state.status = "successed";
+    });
+    builder.addCase(fetchRoomData.rejected, (state, action) => {
+      state.status = "failed";
+    });
+  },
+});
+```
+
+##### UserSlice - odpowiedzialny za przechowywanie informacji o zalogowanym użytkowniku 
+```tsx
+const POST_URL = "http://localhost:3001/users/";
+
+export interface User {
+  _id: number;
+  name: string;
+  email: string;
+  password: string;
+  rooms: string[];
+  age: string;
+  location: string;
+  sex: string;
+  sexPreference: string;
+  description: string;
+  gallery: string;
+  avatar: string;
+}
+
+const initialState: {
+  user: User | null;
+  status: "idle" | "loading" | "successed" | "failed";
+} = { user: null, status: "idle" };
+
+export const fetchUser = createAsyncThunk(
+  "users/fetchUser",
+  async (id: string) => {
+    return fetch(POST_URL + id ).then((res) => res.json());
+  }
+);
+
+
+
+
+const userSlice = createSlice({
+  name: "user",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetchUser.pending, (state, action) => {
+      state.status = "loading";
+    });
+    builder.addCase(fetchUser.fulfilled, (state, action) => {
+      state.user = action.payload;
+      state.status = "successed";
+    });
+    builder.addCase(fetchUser.rejected, (state, action) => {
+      state.status = "failed";
+    });
+  },
+});
+```
